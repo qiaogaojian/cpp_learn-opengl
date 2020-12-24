@@ -71,11 +71,6 @@ int main()
         return -1;
     }
 
-    // configure global opengl state
-    // -----------------------------
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_ALWAYS); // always pass the depth test (same effect as glDisable(GL_DEPTH_TEST))
-
     // build and compile shaders
     // -------------------------
     char *vsPath = "/src/4.1 Depth Testing/depth_testing.vs";
@@ -165,7 +160,7 @@ int main()
 
     // load textures
     // -------------
-    string cubeTexturePath = concatString(getcwd(NULL, 0), "/res/texture/marble.png");
+    string cubeTexturePath = concatString(getcwd(NULL, 0), "/res/texture/marble.jpg");
     string floorTexturePath = concatString(getcwd(NULL, 0), "/res/texture/metal.png");
     unsigned int cubeTexture  = loadTexture(cubeTexturePath.c_str());
     unsigned int floorTexture = loadTexture(floorTexturePath.c_str());
@@ -174,6 +169,11 @@ int main()
     // --------------------
     shader.use();
     shader.setInt("texture1", 0);
+
+    // configure global opengl state
+    // -----------------------------
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_ALWAYS); // always pass the depth test (same effect as glDisable(GL_DEPTH_TEST))
 
     // render loop
     // -----------

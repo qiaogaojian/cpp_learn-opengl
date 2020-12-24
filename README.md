@@ -39,6 +39,7 @@
   ``` sh
   D:\Windows Kits\10\lib\10.0.19041.0\ucrt\x86
   D:\Windows Kits\10\lib\10.0.19041.0\um\x86
+  D:\Program Files\VS2019\VS\VC\Tools\MSVC\14.28.29333\lib\x86
   ```
 
 ### 3.…Ë÷√vscode

@@ -17,9 +17,10 @@
 
 ### 2.环境变量
 
-- Path中添加assimp库
+- Path中添加assimp库 cl编译器
 
   ``` sh
+  D:\Program Files\VS2019\VS\VC\Tools\MSVC\14.28.29333\bin\Hostx86\x86 # 这里使用的是x86架构
   D:\Opengl\Assimp\bin\x86  # 这样就不需要把assimp.dll放到build目录了
   ```
 

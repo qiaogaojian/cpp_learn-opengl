@@ -9,7 +9,9 @@ string subreplace(string resource_str, string sub_str, string new_str);
 int main()
 {
     string buildPath = concatString(getcwd(NULL, 0), "/build");
-    system("del \"./build/\" /f/s/q/a");
+    string cmd = "del \"" + buildPath + "\" /f/s/q/a";
+    system(cmd.c_str());
+
     return 0;
 }
 

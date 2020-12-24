@@ -1,9 +1,4 @@
 {
-  "terminal.integrated.shell.windows": "C:\\Windows\\Sysnative\\cmd.exe",
-  "terminal.integrated.shellArgs.windows": [
-    "/k",
-    "D:/Program Files/VS2019/VS/Common7/Tools/VsDevCmd.bat"
-  ],
   "files.encoding": "gb2312",
   "files.associations": {
     "*.json": "jsonc",

@@ -37,7 +37,6 @@ float lastFrame = 0.0f;
 
 vec3 lightPos(1.2f, 1.0f, 2.0f);
 
-
 float vertices[] = {
     // positions          // normals           // texture coords
     -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
@@ -104,6 +103,7 @@ int main()
         glfwTerminate();
         return -1;
     }
+    // 设置窗口回调事件
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
@@ -123,7 +123,7 @@ int main()
     char *vsPath = "/src/3.3 Model/model.vs";
     char *fsPath = "/src/3.3 Model/model.fs";
     ShaderLoader ourShader(vsPath, fsPath);
-        char *fsLightPath = "/src/2.3 Materials/light.fs";
+    char *fsLightPath = "/src/2.3 Materials/light.fs";
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序
 
     // 加载模型
@@ -223,23 +223,21 @@ int main()
         glfwPollEvents();
     }
 
-    // glfw: terminate, clearing all previously allocated GLFW resources.
+    // 释放资源
     // ------------------------------------------------------------------
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
     glfwTerminate();
     return 0;
 }
 
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+// 窗口大小改变时 调整视口大小
 // ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
-    // make sure the viewport matches the new window dimensions; note that width and
-    // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
 }
 
-// glfw: whenever the mouse moves, this callback is called
-// -------------------------------------------------------
 void mouse_callback(GLFWwindow *window, double xpos, double ypos)
 {
     if (firstMouse)
@@ -258,8 +256,6 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos)
     camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
-// glfw: whenever the mouse scroll wheel scrolls, this callback is called
-// ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(yoffset);

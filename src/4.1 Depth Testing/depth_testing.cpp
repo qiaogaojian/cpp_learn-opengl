@@ -6,10 +6,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <learnopengl/shader.h>
-#include <learnopengl/camera.h>
-#include <learnopengl/model.h>
-
+#include <shader_loader.h>
+#include <camera.h>
+#include <model.h>
+#include <tools.h>
+#include <direct.h>
 #include <iostream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -77,7 +78,9 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    Shader shader("1.1.depth_testing.vs", "1.1.depth_testing.fs");
+    char *vsPath = "/src/4.1 Depth Testing/depth_testing.vs";
+    char *fsPath = "/src/4.1 Depth Testing/depth_testing.fs";
+    ShaderLoader shader(vsPath, fsPath, nullptr);
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -162,8 +165,10 @@ int main()
 
     // load textures
     // -------------
-    unsigned int cubeTexture  = loadTexture(FileSystem::getPath("resources/textures/marble.jpg").c_str());
-    unsigned int floorTexture = loadTexture(FileSystem::getPath("resources/textures/metal.png").c_str());
+    string cubeTexturePath = concatString(getcwd(NULL, 0), "/res/texture/marble.png");
+    string floorTexturePath = concatString(getcwd(NULL, 0), "/res/texture/metal.png");
+    unsigned int cubeTexture  = loadTexture(cubeTexturePath.c_str());
+    unsigned int floorTexture = loadTexture(floorTexturePath.c_str());
 
     // shader configuration
     // --------------------

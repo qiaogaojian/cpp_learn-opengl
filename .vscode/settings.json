@@ -36,6 +36,8 @@
     "iomanip": "cpp",
     "xstring": "cpp",
     "filesystem": "cpp",
-    "string": "cpp"
+    "string": "cpp",
+    "xlocale": "cpp",
+    "xlocinfo": "cpp"
 }
 }

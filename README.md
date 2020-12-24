@@ -27,23 +27,16 @@
 - 新建INCLUDE环境变量,添加以下目录
 
   ```sh
-  D:\Program Files\VS2019\VS\VC\Tools\MSVC\14.28.29333\include
-  D:\Program Files\VS2019\VS\VC\Tools\MSVC\14.28.  29333\atlmfc\include
-  D:\Program Files\VS2019\VS\Common7\Tools
   D:\Windows Kits\10\Include\10.0.19041.0\ucrt
   D:\Windows Kits\10\Include\10.0.19041.0\um
   D:\Windows Kits\10\Include\10.0.19041.0\shared
   D:\Windows Kits\10\Include\10.0.19041.0\winrt
-  D:\Windows Kits\10\Include\10.0.19041.0\cppwinrt
+  D:\Program Files\VS2019\VS\VC\Tools\MSVC\14.28.29333\include
   ```
 
 - 新建LIB环境变量,添加以下目录
 
   ``` sh
-  D:\Program Files\VS2019\VS\VC\Tools\MSVC\14.28.29333\lib\x86
-  D:\Program Files\VS2019\VS\VC\Tools\MSVC\14.28.  29333\atlmfc\lib\x86
-  D:\Program Files\VS2019\VS\VC\Auxiliary\VS\lib\x86
-  D:\Program Files\VS2019\VS\VC\Auxiliary\VS\UnitTest\lib
   D:\Windows Kits\10\lib\10.0.19041.0\ucrt\x86
   D:\Windows Kits\10\lib\10.0.19041.0\um\x86
   ```

@@ -75,7 +75,9 @@ int main()
     // -------------------------
     char *vsPath = "/src/4.2 Stencil testing/stencil_testing.vs";
     char *fsPath = "/src/4.2 Stencil testing/stencil_testing.fs";
+    char *singleColorFsPath = "/src/4.2 Stencil testing/single_color.fs";
     ShaderLoader shader(vsPath, fsPath, nullptr);
+    ShaderLoader sigleColorShader(vsPath, singleColorFsPath, nullptr);
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -174,6 +176,10 @@ int main()
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS); // always pass the depth test (same effect as glDisable(GL_DEPTH_TEST))
+    // 开启模板测试
+    glEnable(GL_STENCIL_TEST);
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     // render loop
     // -----------
@@ -192,7 +198,7 @@ int main()
         // render
         // ------
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // 不要忘记清理模板缓冲
 
         shader.use();
         glm::mat4 model = glm::mat4(1.0f);
@@ -200,7 +206,20 @@ int main()
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         shader.setMat4("view", view);
         shader.setMat4("projection", projection);
-        // cubes
+
+        // 绘制地板
+        glStencilMask(0x00); // 保证地板片段不会写入模板缓冲
+
+        glBindVertexArray(planeVAO);
+        glBindTexture(GL_TEXTURE_2D, floorTexture);
+        shader.setMat4("model", glm::mat4(1.0f));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+
+        // 再绘制要添加描边的真实的物体
+        glStencilFunc(GL_ALWAYS, 1, 0xFF); // 所有以下绘制的片段都会写入模板缓冲
+        glStencilMask(0xFF);               // 弃用模板缓冲写入
+
         glBindVertexArray(cubeVAO);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, cubeTexture);
@@ -211,12 +230,33 @@ int main()
         model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
         shader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-        // floor
-        glBindVertexArray(planeVAO);
-        glBindTexture(GL_TEXTURE_2D, floorTexture);
-        shader.setMat4("model", glm::mat4(1.0f));
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glBindVertexArray(0);
+
+        // 最后再绘制描边, 使用单色shader绘制放大的物体并丢弃模板缓冲内的片段
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF); // 扣掉真实物体片段范围内的模板缓冲
+        glStencilMask(0x00);
+        glDisable(GL_DEPTH_TEST);   // 描边是后绘制的 真实物体在后面 先关闭深度测试避免无法显示真实物体
+
+        sigleColorShader.use();
+        sigleColorShader.setMat4("view", view);
+        sigleColorShader.setMat4("projection", projection);
+        glBindVertexArray(cubeVAO);
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+        model = glm::scale(model, glm::vec3(1.1f, 1.1f, 1.1f));
+        sigleColorShader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(1.1f, 1.1f, 1.1f));
+        sigleColorShader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        // 恢复模板测试和深度测试
+        glStencilMask(0xFF);
+        glStencilFunc(GL_ALWAYS, 0 ,0xFF);
+        glEnable(GL_DEPTH_TEST);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

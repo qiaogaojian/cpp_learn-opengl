@@ -16,6 +16,8 @@ string cmdEnd = "\" include/utils/shader_loader.cpp include/utils/stb_image.cpp 
 
 int main(int argc, char *argv[])
 {
+    system("clear.exe");
+
     string filePath = argv[1];
     string cmd = cmdStart + filePath + cmdEnd;
     system(cmd.c_str());

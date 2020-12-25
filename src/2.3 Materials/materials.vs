@@ -12,7 +12,7 @@ uniform mat3 normalMat; // 法线矩阵 用来消除不同比例缩放对法线方向的影响
 
 void main()
 {
-	gl_Position = projection * view * model * vec4(aPos, 1.0);
+	gl_Position = projection * view * model * vec4(aPos + aNormal * 0.1, 1.0);  // 沿法线方向平移
     Normal = normalMat * aNormal;
     FragPos = vec3(model * vec4(aPos,1.0));
 }

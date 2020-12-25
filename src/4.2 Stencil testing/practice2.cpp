@@ -211,7 +211,7 @@ int main()
         // 材质设置(各个类型光照的颜色和反光度)
         ourShader.setFloat("material.shininess", 0.25f * 128);
         // 光照设置(光照位置和光照强度)
-        ourShader.setVec3("light.ambient", vec3(.3f));
+        ourShader.setVec3("light.ambient", vec3(.6f));
         ourShader.setVec3("light.diffuse", vec3(1.0f));
         ourShader.setVec3("light.specular", vec3(1.0f));
         ourShader.setVec4("light.vector", vec4(lightPos, 1.0f));
@@ -219,6 +219,7 @@ int main()
         ourShader.setVec3("viewPos", camera.Position);
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", camera.GetViewMatrix());
+        ourShader.setFloat("scale", 0.0f);
 
         mat4 model = mat4(1.0f);
         model = translate(model, vec3(0.0f, 0.0f, 0.0f));
@@ -235,9 +236,10 @@ int main()
         shaderSingleColor.use();
         shaderSingleColor.setMat4("projection", projection);
         shaderSingleColor.setMat4("view", camera.GetViewMatrix());
+        shaderSingleColor.setFloat("scale", 0.1f);
         model = mat4(1.0f);
         model = translate(model, vec3(0.0f, 0.0f, 0.0f));
-        model = scale(model, vec3(0.11f, 0.11f, 0.11f));
+        model = scale(model, vec3(0.1f, 0.1f, 0.1f));
         shaderSingleColor.setMat4("model", model);
         ourModel.Draw(shaderSingleColor);
 

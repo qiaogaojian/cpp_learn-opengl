@@ -125,6 +125,8 @@ int main()
     ShaderLoader ourShader(vsPath, fsPath);
     char *fsLightPath = "/src/2.3 Materials/light.fs";
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序
+    char *fsSingleColorPath = "/src/4.2 Stencil testing/single_color.fs";
+    ShaderLoader shaderSingleColor(vsPath, fsSingleColorPath, nullptr);
 
     // 加载模型
     //--------------------------------------------------------------------------------------
@@ -154,6 +156,9 @@ int main()
     //--------------------------------------------------------------------------------------
     glEnable(GL_DEPTH_TEST);
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glEnable(GL_STENCIL_TEST);
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     ourShader.use();
     ourShader.setInt("material.diffuse", 0);
@@ -174,7 +179,31 @@ int main()
 
         // 处理渲染
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+        // 先绘制不带描边的
+        glStencilMask(0x00);
+        shaderLight.use();
+
+        vec3 lightColor = vec3(1.0f);
+        lightColor.x = sin(glfwGetTime() * 2.0f);
+        lightColor.y = sin(glfwGetTime() * 0.7f);
+        lightColor.z = sin(glfwGetTime() * 1.3f);
+        mat4 projection = mat4(1.0f);
+        projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
+        shaderLight.setVec3("lightColor", vec3(1.0f));
+        shaderLight.setMat4("projection", projection);
+        shaderLight.setMat4("view", camera.GetViewMatrix());
+        mat4 modelLight = mat4(1.0f);
+        modelLight = translate(modelLight, lightPos);
+        modelLight = scale(modelLight, vec3(0.2f));
+        shaderLight.setMat4("model", modelLight);
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        // 再绘制带描边的物体
+        glStencilFunc(GL_ALWAYS, 1, 0xff);
+        glStencilMask(0xff);
 
         // 设置 uniform 之前要先激活shader
         ourShader.use();
@@ -188,8 +217,6 @@ int main()
         ourShader.setVec4("light.vector", vec4(lightPos, 1.0f));
 
         ourShader.setVec3("viewPos", camera.Position);
-        mat4 projection = mat4(1.0f);
-        projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", camera.GetViewMatrix());
 
@@ -201,23 +228,22 @@ int main()
 
         ourModel.Draw(ourShader);
 
-        // 绘制灯
-        shaderLight.use();
+        glStencilFunc(GL_NOTEQUAL, 1, 0xff);
+        glStencilMask(0x00);
+        glDisable(GL_DEPTH_TEST);
 
-        vec3 lightColor = vec3(1.0f);
-        lightColor.x = sin(glfwGetTime() * 2.0f);
-        lightColor.y = sin(glfwGetTime() * 0.7f);
-        lightColor.z = sin(glfwGetTime() * 1.3f);
+        shaderSingleColor.use();
+        shaderSingleColor.setMat4("projection", projection);
+        shaderSingleColor.setMat4("view", camera.GetViewMatrix());
+        model = mat4(1.0f);
+        model = translate(model, vec3(0.0f, 0.0f, 0.0f));
+        model = scale(model, vec3(0.11f, 0.11f, 0.11f));
+        shaderSingleColor.setMat4("model", model);
+        ourModel.Draw(shaderSingleColor);
 
-        shaderLight.setVec3("lightColor", vec3(1.0f));
-        shaderLight.setMat4("projection", projection);
-        shaderLight.setMat4("view", camera.GetViewMatrix());
-        mat4 modelLight = mat4(1.0f);
-        modelLight = translate(modelLight, lightPos);
-        modelLight = scale(modelLight, vec3(0.2f));
-        shaderLight.setMat4("model", modelLight);
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glStencilMask(0xff);
+        glStencilFunc(GL_ALWAYS, 0, 0xff);
+        glEnable(GL_DEPTH_TEST);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -205,7 +205,7 @@ int main()
         shader.setMat4("view", view);
         shader.setMat4("projection", projection);
 
-        // 绘制地板
+        // 先绘制地板
         glStencilMask(0x00); // 保证地板片段不会写入模板缓冲
 
         glBindVertexArray(planeVAO);
@@ -222,10 +222,6 @@ int main()
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, cubeTexture);
         model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-        shader.setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
         shader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
@@ -245,13 +241,30 @@ int main()
         sigleColorShader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
+
+        // 恢复模板测试和深度测试
+        glStencilMask(0xFF);
+        glClear(GL_STENCIL_BUFFER_BIT); // 不要忘记清理模板缓冲
+
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glEnable(GL_DEPTH_TEST);
+        shader.use();
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+        shader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF); // 扣掉真实物体片段范围内的模板缓冲
+        glStencilMask(0x00);
+        glDisable(GL_DEPTH_TEST); // 我们在绘制轮廓的时候关闭深度测试，是为了避免我们渲染的轮廓被其它物体覆盖住
+
+        sigleColorShader.use();
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
         model = glm::scale(model, glm::vec3(1.1f, 1.1f, 1.1f));
         sigleColorShader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        // 恢复模板测试和深度测试
         glStencilMask(0xFF);
         glStencilFunc(GL_ALWAYS, 0, 0xFF);
         glEnable(GL_DEPTH_TEST);

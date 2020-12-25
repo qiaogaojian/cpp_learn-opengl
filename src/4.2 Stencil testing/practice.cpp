@@ -232,7 +232,7 @@ int main()
         // 最后再绘制描边, 使用单色shader绘制放大的物体并丢弃模板缓冲内的片段
         glStencilFunc(GL_NOTEQUAL, 1, 0xFF); // 扣掉真实物体片段范围内的模板缓冲
         glStencilMask(0x00);
-        glDisable(GL_DEPTH_TEST); // 描边是后绘制的 真实物体在后面 先关闭深度测试避免无法显示真实物体
+        glDisable(GL_DEPTH_TEST); // 我们在绘制轮廓的时候关闭深度测试，是为了避免我们渲染的轮廓被其它物体覆盖住
 
         sigleColorShader.use();
         sigleColorShader.setMat4("view", view);

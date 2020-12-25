@@ -38,10 +38,10 @@
           "cwd": "${workspaceFolder}"
         },
       //   "problemMatcher": ["$msCompile"],
-      //   "group": {
-      //     "kind": "build",
-      //     "isDefault": true
-      //   },
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
         "presentation": {
           // 控制是否显示运行此任务的面板。默认值为 "always"：
           // - always:    总是在此任务执行时显示终端。

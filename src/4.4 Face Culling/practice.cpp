@@ -32,47 +32,47 @@ float fov = 45.0f;
 
 float vertices[] = {
     // Back face
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // Bottom-left
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-     0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom-right
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom-left
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // Bottom-left
+    0.5f, -0.5f, -0.5f, 1.0f, 0.0f,  // bottom-right
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,   // top-right
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,   // top-right
+    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,  // top-left
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom-left
     // Front face
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
-    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // top-left
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, // bottom-left
+    0.5f, 0.5f, 0.5f, 1.0f, 1.0f,   // top-right
+    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,  // bottom-right
+    0.5f, 0.5f, 0.5f, 1.0f, 1.0f,   // top-right
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, // bottom-left
+    -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,  // top-left
     // Left face
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
-    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-left
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
-    // Right face
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
-     0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+    -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,   // top-right
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom-left
+    -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,  // top-left
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom-left
+    -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,   // top-right
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,  // bottom-right
+                                     // Right face
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,    // top-left
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,   // top-right
+    0.5f, -0.5f, -0.5f, 0.0f, 1.0f,  // bottom-right
+    0.5f, -0.5f, -0.5f, 0.0f, 1.0f,  // bottom-right
+    0.5f, -0.5f, 0.5f, 0.0f, 0.0f,   // bottom-left
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,    // top-left
     // Bottom face
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
-     0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // top-left
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // top-right
+    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,   // bottom-left
+    0.5f, -0.5f, -0.5f, 1.0f, 1.0f,  // top-left
+    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,   // bottom-left
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // top-right
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,  // bottom-right
     // Top face
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f  // bottom-left
+    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, // top-left
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,  // top-right
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,   // bottom-right
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,   // bottom-right
+    -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,  // bottom-left
+    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f  // top-left
 };
 
 vec3 cubePositions[] = {
@@ -212,13 +212,13 @@ int main()
     shaderLoader.setInt("texture2", 1);
     shaderLoader.setFloat("alpha", 0.5f);
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);    // 隐藏鼠标
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // 隐藏鼠标
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
     glEnable(GL_CULL_FACE); // 开启剔除
-    glCullFace(GL_FRONT);   // 剔除正面  GL_BACK：只剔除背向面 GL_FRONT：只剔除正向面 GL_FRONT_AND_BACK：剔除正向面和背向面
-    glFrontFace(GL_CCW);    // GL_CW 顺时针是正面 GL_CCW 逆时针是正面
+    glCullFace(GL_BACK);   // 剔除正面  GL_BACK：只剔除背向面 GL_FRONT：只剔除正向面 GL_FRONT_AND_BACK：剔除正向面和背向面
+    glFrontFace(GL_CW);    // GL_CW 顺时针是正面 GL_CCW 逆时针是正面
 
     while (!glfwWindowShouldClose(window))
     {

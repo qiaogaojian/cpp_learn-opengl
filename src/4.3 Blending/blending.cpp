@@ -198,6 +198,8 @@ int main()
     unsigned int floorTexture = loadTexture(floorTexturePath.c_str());
     unsigned int windowTexture = loadTexture(windowTexturePath.c_str());
     unsigned int grassTexture = loadTexture(grassTexturePath.c_str());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     // shader configuration
     // --------------------

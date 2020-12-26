@@ -129,8 +129,8 @@ int main()
     char *fsLightPath = "/src/2.3 Materials/light.fs";
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序
 
-    char *vsCubePath = "/src/4.6 Cubemaps/cubemaps.vs";
-    char *fsCubePath = "/src/4.6 Cubemaps/cubemaps.fs";
+    char *vsCubePath = "/src/4.6 Cubemaps/cubemap.vs";
+    char *fsCubePath = "/src/4.6 Cubemaps/cubemap.fs";
     ShaderLoader shaderCube(vsCubePath, fsCubePath);
 
     float skyboxVertices[] = {
@@ -270,12 +270,13 @@ int main()
         processInput(window);
 
         // 处理渲染
-        glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glDepthMask(GL_FALSE);
 
         shaderCube.use();
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
         mat4 projection = mat4(1.0f);
         projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);

@@ -172,7 +172,7 @@ int main()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
     glBindVertexArray(0);
 
-    // screen VAO
+    // screen VAO   帧缓冲: 创建承载帧缓冲的四边形
     unsigned int screenVAO, screenVBO;
     glGenVertexArrays(1, &screenVAO);
     glGenBuffers(1, &screenVBO);
@@ -185,10 +185,12 @@ int main()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)(2 * sizeof(float)));
     glBindVertexArray(0);
 
+    // 帧缓冲: 创建帧缓冲
     unsigned int framebuffer;
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
+    // 帧缓冲: 创建帧缓冲材质 用来储存颜色缓冲
     unsigned int texScreen;
     glGenTextures(1, &texScreen);
     glBindTexture(GL_TEXTURE_2D, texScreen);
@@ -198,6 +200,7 @@ int main()
     glBindTexture(GL_TEXTURE_2D, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texScreen, 0);
 
+    // 帧缓冲: 创建渲染缓冲对象 用来储存深度缓冲和模板缓冲
     unsigned int rbo;
     glGenRenderbuffers(1, &rbo);
     glBindRenderbuffer(GL_RENDERBUFFER, rbo);
@@ -221,6 +224,7 @@ int main()
     // --------------------
     shader.use();
     shader.setInt("texture1", 0);
+    // 帧缓冲: 用来设置帧缓冲材质
     shaderScreen.use();
     shaderScreen.setInt("screenTexture", 0);
 
@@ -243,7 +247,7 @@ int main()
         // input
         // -----
         processInput(window);
-
+        // 帧缓冲: 用来写入帧缓冲
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glEnable(GL_DEPTH_TEST);
 
@@ -276,8 +280,9 @@ int main()
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glDisable(GL_DEPTH_TEST);
+        // 帧缓冲: 用来显示帧缓冲中的图像
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);   // 0为默认的帧缓冲 用来显示到屏幕
+        glDisable(GL_DEPTH_TEST);               // 这里要绘制的是一个四边形 不需要深度测试
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 

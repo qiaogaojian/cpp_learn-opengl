@@ -273,19 +273,8 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glDepthMask(GL_FALSE);
-
-        shaderCube.use();
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
         mat4 projection = mat4(1.0f);
         projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
-        shaderCube.setMat4("projection", projection);
-        shaderCube.setMat4("view",mat4(mat3(camera.GetViewMatrix())));
-        glBindVertexArray(cubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-
-        glDepthMask(GL_TRUE);
 
         // 设置 uniform 之前要先激活shader
         ourShader.use();
@@ -328,6 +317,22 @@ int main()
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
+        // 1表示“距离摄像机最远”。当使用 GL_LESS ，表示如果当前正在着色的像素的距离比这个像素目前的“深度值“小，
+        // OpenGL 就绘制（然后把这个像素的深度值更新为新的更小的值），否则就将其丢弃。而这个 skybox 的 vertex
+        //  shader 相当于把顶点的距离强制设定为 1 了。所以只有使用 GL_LEQUAL，即小于等于当前像素的“距离”的，
+        // 就绘制，这样 skybox 的像素才会被绘制（而不是丢弃），否则你会看到 skybox 被丢弃的效果。当你渲染完
+        // skybox 以后，你可以继续使用 GL_LESS 绘制其他的。
+        glDepthFunc(GL_LEQUAL);
+        shaderCube.use();
+        shaderCube.setMat4("view", mat4(mat3(camera.GetViewMatrix()))); // 移除平移对天空盒的影响
+        shaderCube.setMat4("projection", projection);
+        glBindVertexArray(cubeVAO);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+        glDepthFunc(GL_LESS);
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -335,7 +340,9 @@ int main()
     // 释放资源
     // ------------------------------------------------------------------
     glDeleteVertexArrays(1, &VAO);
+    glDeleteVertexArrays(1, &cubeVAO);
     glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &cubeVBO);
     glfwTerminate();
     return 0;
 }

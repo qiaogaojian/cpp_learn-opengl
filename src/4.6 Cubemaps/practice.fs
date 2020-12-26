@@ -64,6 +64,6 @@ void main()
 
     // 我们可以将环境光分量保持不变，让环境光照不会随着距离减少，但是如果我们使用多于一
     // 个的光源，所有的环境光分量将会开始叠加，所以在这种情况下我们也希望衰减环境光照。
-    vec3 result=ambient+diffuse+specular;
-    FragColor=vec4(result * attenuation,1.);
+    vec3 result=(ambient+diffuse)* attenuation;
+    FragColor=vec4(result, 1.);
 }

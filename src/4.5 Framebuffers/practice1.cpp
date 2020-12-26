@@ -283,13 +283,35 @@ int main()
         glBindVertexArray(0);
 
         // 帧缓冲: 用来显示帧缓冲中的图像
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);   // 0为默认的帧缓冲 用来显示到屏幕
-        glDisable(GL_DEPTH_TEST);               // 这里要绘制的是一个四边形 不需要深度测试
+        glBindFramebuffer(GL_FRAMEBUFFER, 0); // 0为默认的帧缓冲 用来显示到屏幕
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // cubes
+        glBindVertexArray(cubeVAO);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, cubeTexture);
+        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+        shader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+        shader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        // floor
+        glBindVertexArray(planeVAO);
+        glBindTexture(GL_TEXTURE_2D, floorTexture);
+        shader.setMat4("model", glm::mat4(1.0f));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+
+        glDisable(GL_DEPTH_TEST); // 这里要绘制的是一个四边形 不需要深度测试
 
         shaderScreen.use();
-        glBindVertexArray(screenVAO);
+        shaderScreen.setMat4("view", view);
+        shaderScreen.setMat4("projection", projection);
+        shaderScreen.setMat4("model", mat4(1.0f));
+        glBindVertexArray(cubeVAO);
         glBindTexture(GL_TEXTURE_2D, texScreen);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 

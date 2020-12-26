@@ -11,6 +11,8 @@
 #include <tools.h>
 #include <direct.h>
 #include <iostream>
+#include <vector>
+#include <string>
 
 using namespace std;
 using namespace glm;
@@ -19,6 +21,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
+unsigned int loadCubemap(vector<string> faces);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -126,6 +129,97 @@ int main()
     char *fsLightPath = "/src/2.3 Materials/light.fs";
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序
 
+    char *vsCubePath = "/src/4.6 Cubemaps/cubemaps.vs";
+    char *fsCubePath = "/src/4.6 Cubemaps/cubemaps.fs";
+    ShaderLoader shaderCube(vsCubePath, fsCubePath);
+
+    float skyboxVertices[] = {
+        // positions
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+
+        -1.0f, -1.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f,
+
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+
+        -1.0f, -1.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f,
+
+        -1.0f, 1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f, -1.0f,
+
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f, 1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f};
+
+    string resPath = getcwd(NULL, 0);
+    vector<string> faces1 = {
+        resPath + "/res/cubemap/lancellotti/posx.jpg",
+        resPath + "/res/cubemap/lancellotti/negx.jpg",
+        resPath + "/res/cubemap/lancellotti/posy.jpg",
+        resPath + "/res/cubemap/lancellotti/negy.jpg",
+        resPath + "/res/cubemap/lancellotti/posz.jpg",
+        resPath + "/res/cubemap/lancellotti/negz.jpg"};
+
+    vector<string> faces2 = {
+        resPath + "/res/cubemap/doom/posx.jpg",
+        resPath + "/res/cubemap/doom/negx.jpg",
+        resPath + "/res/cubemap/doom/posy.jpg",
+        resPath + "/res/cubemap/doom/negy.jpg",
+        resPath + "/res/cubemap/doom/posz.jpg",
+        resPath + "/res/cubemap/doom/negz.jpg"};
+
+    vector<string> faces3 = {
+        resPath + "/res/cubemap/skybox/posx.jpg",
+        resPath + "/res/cubemap/skybox/negx.jpg",
+        resPath + "/res/cubemap/skybox/posy.jpg",
+        resPath + "/res/cubemap/skybox/negy.jpg",
+        resPath + "/res/cubemap/skybox/posz.jpg",
+        resPath + "/res/cubemap/skybox/negz.jpg"};
+
+    unsigned int cubemapTexture = loadCubemap(faces3);
+
+    // 天空盒缓冲数据
+    unsigned int cubeVAO;
+    unsigned int cubeVBO;
+    // 生成 VAO VBO
+    glGenVertexArrays(1, &cubeVAO);
+    glGenBuffers(1, &cubeVBO);
+    // 首先绑定VAO
+    glBindVertexArray(cubeVAO);
+    // 然后绑定并设置VBO
+    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
+
+    // 然后设置顶点属性
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)(0));
+    glEnableVertexAttribArray(0);
+
     // 加载模型
     //--------------------------------------------------------------------------------------
     stbi_set_flip_vertically_on_load(true); // 加载模型前翻转材质Y轴
@@ -162,6 +256,9 @@ int main()
     ourShader.setFloat("light.linear", 0.09f);
     ourShader.setFloat("light.quadratic", 0.032f);
 
+    shaderCube.use();
+    shaderCube.setInt("skybox", 0);
+
     while (!glfwWindowShouldClose(window))
     {
         // 帧间隔时间
@@ -176,6 +273,19 @@ int main()
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        glDepthMask(GL_FALSE);
+
+        shaderCube.use();
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        mat4 projection = mat4(1.0f);
+        projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
+        shaderCube.setMat4("projection", projection);
+        shaderCube.setMat4("view", camera.GetViewMatrix());
+        glBindVertexArray(cubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        glDepthMask(GL_TRUE);
+
         // 设置 uniform 之前要先激活shader
         ourShader.use();
 
@@ -188,8 +298,6 @@ int main()
         ourShader.setVec4("light.vector", vec4(lightPos, 1.0f));
 
         ourShader.setVec3("viewPos", camera.Position);
-        mat4 projection = mat4(1.0f);
-        projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", camera.GetViewMatrix());
 
@@ -295,4 +403,34 @@ void processInput(GLFWwindow *window)
     {
         camera.ProcessKeyboard(UP, deltaTime);
     }
+}
+
+unsigned int loadCubemap(vector<string> faces)
+{
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+    int width, height, nrChannels;
+    for (unsigned int i = 0; i < faces.size(); i++)
+    {
+        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+        if (data)
+        {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            stbi_image_free(data);
+        }
+        else
+        {
+            cout << "Cubemap texture failed to load at path:" << faces[i] << endl;
+            stbi_image_free(data);
+        }
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    return textureID;
 }

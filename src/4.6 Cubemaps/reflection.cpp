@@ -126,8 +126,8 @@ int main()
     char *vsPath = "/src/4.6 Cubemaps/reflection.vs";
     char *fsPath = "/src/4.6 Cubemaps/reflection.fs";
     ShaderLoader ourShader(vsPath, fsPath);
-    char *fsLightPath = "/src/2.3 Materials/light.fs";
-    ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序
+    char *fsLightPath = "/src/4.6 Cubemaps/light.fs";
+    ShaderLoader shaderLight(vsPath, fsLightPath); // 发光物体shader程序
 
     char *vsCubePath = "/src/4.6 Cubemaps/cubemap.vs";
     char *fsCubePath = "/src/4.6 Cubemaps/cubemap.fs";
@@ -243,6 +243,10 @@ int main()
     // 然后设置顶点属性
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(0));
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     // 设置OpenGL全局状态
     //--------------------------------------------------------------------------------------
@@ -255,10 +259,13 @@ int main()
     ourShader.setFloat("light.constant", 1.0f);
     ourShader.setFloat("light.linear", 0.09f);
     ourShader.setFloat("light.quadratic", 0.032f);
-    ourShader.setInt("skybox",0);
+    ourShader.setInt("skybox", 0);
 
     shaderCube.use();
     shaderCube.setInt("skybox", 0);
+
+    shaderLight.use();
+    shaderLight.setInt("skybox", 0);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -279,7 +286,8 @@ int main()
 
         // 设置 uniform 之前要先激活shader
         ourShader.use();
-
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
         // 材质设置(各个类型光照的颜色和反光度)
         ourShader.setFloat("material.shininess", 0.25f * 128);
         // 光照设置(光照位置和光照强度)
@@ -302,19 +310,14 @@ int main()
 
         // 绘制灯
         shaderLight.use();
-
-        vec3 lightColor = vec3(1.0f);
-        lightColor.x = sin(glfwGetTime() * 2.0f);
-        lightColor.y = sin(glfwGetTime() * 0.7f);
-        lightColor.z = sin(glfwGetTime() * 1.3f);
-
-        shaderLight.setVec3("lightColor", vec3(1.0f));
+        shaderLight.setVec3("viewPos", camera.Position);
         shaderLight.setMat4("projection", projection);
         shaderLight.setMat4("view", camera.GetViewMatrix());
         mat4 modelLight = mat4(1.0f);
         modelLight = translate(modelLight, lightPos);
         modelLight = scale(modelLight, vec3(0.2f));
         shaderLight.setMat4("model", modelLight);
+        shaderLight.setMat3("normalMat", transpose(inverse(model)));
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 

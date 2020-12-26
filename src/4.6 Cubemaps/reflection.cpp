@@ -255,6 +255,7 @@ int main()
     ourShader.setFloat("light.constant", 1.0f);
     ourShader.setFloat("light.linear", 0.09f);
     ourShader.setFloat("light.quadratic", 0.032f);
+    ourShader.setInt("skybox",0);
 
     shaderCube.use();
     shaderCube.setInt("skybox", 0);

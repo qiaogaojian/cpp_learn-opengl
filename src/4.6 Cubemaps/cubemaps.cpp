@@ -191,16 +191,16 @@ int main()
         resPath + "/res/cubemap/doom/negx.jpg",
         resPath + "/res/cubemap/doom/posy.jpg",
         resPath + "/res/cubemap/doom/negy.jpg",
-        resPath + "/res/cubemap/doom/posz.jpg",
-        resPath + "/res/cubemap/doom/negz.jpg"};
+        resPath + "/res/cubemap/doom/negz.jpg",
+        resPath + "/res/cubemap/doom/posz.jpg"};
 
     vector<string> faces3 = {
         resPath + "/res/cubemap/skybox/posx.jpg",
         resPath + "/res/cubemap/skybox/negx.jpg",
         resPath + "/res/cubemap/skybox/posy.jpg",
         resPath + "/res/cubemap/skybox/negy.jpg",
-        resPath + "/res/cubemap/skybox/posz.jpg",
-        resPath + "/res/cubemap/skybox/negz.jpg"};
+        resPath + "/res/cubemap/skybox/negz.jpg",
+        resPath + "/res/cubemap/skybox/posz.jpg"};
 
     unsigned int cubemapTexture = loadCubemap(faces3);
 
@@ -281,7 +281,7 @@ int main()
         mat4 projection = mat4(1.0f);
         projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
         shaderCube.setMat4("projection", projection);
-        shaderCube.setMat4("view", camera.GetViewMatrix());
+        shaderCube.setMat4("view",mat4(mat3(camera.GetViewMatrix())));
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 

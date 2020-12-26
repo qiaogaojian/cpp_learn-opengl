@@ -264,7 +264,7 @@ int main()
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         shader.setMat4("view", view);
         shader.setMat4("projection", projection);
-        // cubes
+        // 帧缓冲中的 cubes
         glBindVertexArray(cubeVAO);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, cubeTexture);
@@ -275,7 +275,7 @@ int main()
         model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
         shader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-        // floor
+        // 帧缓冲中的 floor
         glBindVertexArray(planeVAO);
         glBindTexture(GL_TEXTURE_2D, floorTexture);
         shader.setMat4("model", glm::mat4(1.0f));
@@ -284,10 +284,11 @@ int main()
 
         // 帧缓冲: 用来显示帧缓冲中的图像
         glBindFramebuffer(GL_FRAMEBUFFER, 0); // 0为默认的帧缓冲 用来显示到屏幕
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // cubes
+        // 真实的 cubes
+        model = glm::mat4(1.0f);
         glBindVertexArray(cubeVAO);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, cubeTexture);
@@ -298,14 +299,12 @@ int main()
         model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
         shader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-        // floor
+        // 真实的 floor
         glBindVertexArray(planeVAO);
         glBindTexture(GL_TEXTURE_2D, floorTexture);
         shader.setMat4("model", glm::mat4(1.0f));
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
-
-        glDisable(GL_DEPTH_TEST); // 这里要绘制的是一个四边形 不需要深度测试
 
         shaderScreen.use();
         shaderScreen.setMat4("view", view);
@@ -313,7 +312,7 @@ int main()
         shaderScreen.setMat4("model", mat4(1.0f));
         glBindVertexArray(cubeVAO);
         glBindTexture(GL_TEXTURE_2D, texScreen);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawArrays(GL_TRIANGLES, 6, 6);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

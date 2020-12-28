@@ -32,6 +32,7 @@ public:
     vector<Mesh>    meshes;
     string directory;
     bool gammaCorrection;
+    int textureCount;
 
     // constructor, expects a filepath to a 3D model.
     Model(string const &path, bool gamma = false) : gammaCorrection(gamma)
@@ -44,6 +45,10 @@ public:
     {
         for(unsigned int i = 0; i < meshes.size(); i++)
             meshes[i].Draw(shader);
+    }
+
+    int getTextureCount(){
+        return textureCount;
     }
 
 private:
@@ -168,6 +173,7 @@ private:
         std::vector<Texture> reflectMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_reflection");
         textures.insert(textures.end(), reflectMaps.begin(), reflectMaps.end());
         // return a mesh object created from the extracted mesh data
+        textureCount = textures.size();
         return Mesh(vertices, indices, textures);
     }
 

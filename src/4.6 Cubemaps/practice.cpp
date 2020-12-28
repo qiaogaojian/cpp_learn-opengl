@@ -304,8 +304,8 @@ int main()
         ourShader.setMat3("normalMat", transpose(inverse(model)));
 
         ourModel.Draw(ourShader);
-        ourShader.setInt("skybox", 4);
-        glActiveTexture(GL_TEXTURE4);
+        ourShader.setInt("skybox", ourModel.getTextureCount()); // 置于模型材质的末尾
+        glActiveTexture(GL_TEXTURE0 + ourModel.getTextureCount());
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 
         // 绘制灯

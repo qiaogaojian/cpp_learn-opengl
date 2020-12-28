@@ -213,7 +213,7 @@ int main()
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);    // 隐藏鼠标
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
-    glEnable(GL_PROGRAM_POINT_SIZE);    // 绘制类型为点时才有效
+    // glEnable(GL_PROGRAM_POINT_SIZE);    // 绘制类型为点时才有效
 
     while (!glfwWindowShouldClose(window))
     {
@@ -247,7 +247,7 @@ int main()
             model = translate(model, cubePositions[i]);
             model = rotate(model, radians(20.0f * i), glm::vec3(1.0f, 0.3f, 0.5f));
             shaderLoader.setMat4("model", model);
-            glDrawArrays(GL_POINTS, 0, 36);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
         }
         // glDrawArrays(GL_TRIANGLES, 0, 3);
 
@@ -298,6 +298,14 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
         camera.ProcessKeyboard(RIGHT, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    {
+        camera.ProcessKeyboard(DOWN, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    {
+        camera.ProcessKeyboard(UP, deltaTime);
     }
 }
 

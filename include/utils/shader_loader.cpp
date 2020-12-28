@@ -29,8 +29,7 @@ ShaderLoader::ShaderLoader(const char* vertexPath, const char* fragmentPath, con
 
 		if (geometryPath != nullptr)
 		{
-			string gPath = concatString(getcwd(NULL, 0),geometryPath);
-            gShaderFile.open(gPath);
+			gShaderFile.open(concatString(getcwd(NULL, 0),geometryPath));
 			stringstream gShaderStream;
 			gShaderStream << gShaderFile.rdbuf();
 			gShaderFile.close();

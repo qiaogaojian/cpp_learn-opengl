@@ -21,6 +21,7 @@ void build_house(vec4 position)
     gl_Position = position + vec4( 0.2,  0.2, 0.0, 0.0);    // 4:右上
     EmitVertex();
     gl_Position = position + vec4( 0.0,  0.4, 0.0, 0.0);    // 5:顶部
+    fColor = vec3(1.0, 1.0, 1.0); // gs_in[0] 因为只有一个输入顶点
     EmitVertex();
     EndPrimitive();
 }

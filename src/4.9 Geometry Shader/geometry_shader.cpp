@@ -236,7 +236,7 @@ int main()
     shaderLoader.setInt("texture2", 1);
     shaderLoader.setFloat("alpha", 0.5f);
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);    // 隐藏鼠标
+    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);    // 隐藏鼠标
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
     // glEnable(GL_PROGRAM_POINT_SIZE);    // 绘制类型为点时才有效

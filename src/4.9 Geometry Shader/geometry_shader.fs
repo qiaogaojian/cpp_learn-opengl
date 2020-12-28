@@ -11,17 +11,9 @@ uniform sampler2D texture1;
 uniform sampler2D texture2;
 uniform float alpha;
 
+in vec3 fColor;
+
 void main()
 {
-    // FragColor = vec4(1.0f,0.5f,0.2f,1.0f);
-    // if (gl_FragCoord.x < 400){
-        //     FragColor = texture(texture1, TexCoord);
-    // } else {
-        //     FragColor = texture(texture2, vec2(-TexCoord.x,TexCoord.y));
-    // }
-    if(gl_FrontFacing){
-        FragColor=texture(texture1,fs_in.TexCoord);
-    }else{
-        FragColor=texture(texture2,vec2(-fs_in.TexCoord.x,fs_in.TexCoord.y));
-    }
+    FragColor = vec4(fColor, 1.0);
 }

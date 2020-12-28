@@ -11,6 +11,7 @@ layout (std140) uniform Matrices
 out VS_OUT
 {
     vec2 TexCoord;
+    vec3 color;
 } vs_out;
 
 uniform float offsetX;
@@ -21,4 +22,5 @@ void main()
 	gl_Position = projection * view * model * vec4(vec3(aPos.x+offsetX,aPos.y,aPos.z), 1.0);
     // gl_PointSize = gl_Position.z;
 	vs_out.TexCoord = vec2(aTexCoord.x, aTexCoord.y);
+	vs_out.color = vec3(aTexCoord.x, aTexCoord.y, 0);
 }

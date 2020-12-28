@@ -267,9 +267,8 @@ int main()
         shaderLoader.use();
         mat4 projection = mat4(1.0f);
         projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
-        shaderLoader.setMat4("projection", projection);
-
-        shaderLoader.setMat4("view", camera.GetViewMatrix());
+        // shaderLoader.setMat4("projection", projection);
+        // shaderLoader.setMat4("view", camera.GetViewMatrix());
 
         glBindVertexArray(VAO);
         for (int i = 0; i < 1; i++)

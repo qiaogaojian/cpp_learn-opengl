@@ -213,6 +213,7 @@ int main()
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);    // 隐藏鼠标
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
+    glEnable(GL_PROGRAM_POINT_SIZE);    // 绘制类型为点时才有效
 
     while (!glfwWindowShouldClose(window))
     {
@@ -246,7 +247,7 @@ int main()
             model = translate(model, cubePositions[i]);
             model = rotate(model, radians(20.0f * i), glm::vec3(1.0f, 0.3f, 0.5f));
             shaderLoader.setMat4("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+            glDrawArrays(GL_POINTS, 0, 36);
         }
         // glDrawArrays(GL_TRIANGLES, 0, 3);
 

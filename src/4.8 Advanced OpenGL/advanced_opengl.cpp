@@ -131,6 +131,31 @@ int main()
     char *fsPath = "/src/4.8 Advanced OpenGL/advanced_opengl.fs";
     ShaderLoader shaderLoader(vsPath, fsPath, nullptr);
 
+    // 配置 UBO(Uniform Buffer Object)
+    //--------------------------------------------------------------------------------------
+    // 首先，获取顶点着色器的Uniform块索引
+    unsigned int uniformBlockIndex = glGetUniformBlockIndex(shaderLoader.ID,"Matrices");
+    // 然后, 将每一个 Shader的ID Uniform块索引 和 绑定点 绑定
+    glUniformBlockBinding(shaderLoader.ID, uniformBlockIndex, 0);
+    // 接下来，我们创建Uniform缓冲对象本身
+    unsigned int uboMatrices;
+    glGenBuffers(1, &uboMatrices);
+    glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
+    glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2*sizeof(mat4));
+    glBindBuffer(GL_UNIFORM_BUFFER, 0); // 注销
+
+    // 存储 projection 和 view 到 Matrices Uniform块索引
+    mat4 projection = mat4(1.0f);
+    projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
+    mat4 view = mat4(1.0f);
+    view = camera.GetViewMatrix();
+
+    glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), &projection[0].x);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), &view[0].x);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
     // 设置顶点数据 配置顶点属性
     //--------------------------------------------------------------------------------------
     unsigned int VAO;
@@ -236,9 +261,9 @@ int main()
         shaderLoader.use();
         mat4 projection = mat4(1.0f);
         projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
-        shaderLoader.setMat4("projection", projection);
+        // shaderLoader.setMat4("projection", projection);
 
-        shaderLoader.setMat4("view", camera.GetViewMatrix());
+        // shaderLoader.setMat4("view", camera.GetViewMatrix());
 
         glBindVertexArray(VAO);
         for (int i = 0; i < 1; i++)

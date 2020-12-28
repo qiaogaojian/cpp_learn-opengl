@@ -258,12 +258,18 @@ int main()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
 
+        mat4 view = mat4(1.0f);
+        view = camera.GetViewMatrix();
+        glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), &view[0].x);
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
         shaderLoader.use();
         mat4 projection = mat4(1.0f);
         projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
-        // shaderLoader.setMat4("projection", projection);
+        shaderLoader.setMat4("projection", projection);
 
-        // shaderLoader.setMat4("view", camera.GetViewMatrix());
+        shaderLoader.setMat4("view", camera.GetViewMatrix());
 
         glBindVertexArray(VAO);
         for (int i = 0; i < 1; i++)

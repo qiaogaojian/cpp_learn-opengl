@@ -108,7 +108,7 @@ int main()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // 隐藏鼠标
+    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // 隐藏鼠标
 
     // 初始化 glad  加载所有 opengl 的函数指针
     //--------------------------------------------------------------------------------------
@@ -122,7 +122,8 @@ int main()
     //--------------------------------------------------------------------------------------
     char *vsPath = "/src/4.9 Geometry Shader/explode.vs";
     char *fsPath = "/src/4.9 Geometry Shader/explode.fs";
-    ShaderLoader ourShader(vsPath, fsPath);
+    char *gsPath = "/src/4.9 Geometry Shader/explode.gs";
+    ShaderLoader ourShader(vsPath, fsPath, gsPath);
     char *fsLightPath = "/src/2.3 Materials/light.fs";
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序
 
@@ -171,7 +172,7 @@ int main()
         processInput(window);
 
         // 处理渲染
-        glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+        glClearColor(1, 1, 1, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // 设置 uniform 之前要先激活shader
@@ -186,6 +187,7 @@ int main()
         ourShader.setVec4("light.vector", vec4(lightPos, 1.0f));
 
         ourShader.setVec3("viewPos", camera.Position);
+        ourShader.setFloat("time", currentFrame);
         mat4 projection = mat4(1.0f);
         projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
         ourShader.setMat4("projection", projection);

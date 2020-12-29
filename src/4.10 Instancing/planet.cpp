@@ -142,16 +142,18 @@ int main()
     modelMatrices = new mat4[amout];
     srand(glfwGetTime());
     float radius = 50.0f;
-    float offset = 2.5f;
+    float offset = 25.0f;
     for (unsigned int i = 0; i < amout; i++)
     {
-        mat4 model;
+        mat4 model = mat4(1.0f);
         // 1. 位移: 分布半径为radius的圆形上, 偏移范围是 [-offset, offset]
         float angle = (float)i/(float)amout*360.0f;
         float displacement = (rand()%(int)(2*offset*100))/100.0f - offset;
-        float x = cos(angle) * radius + displacement;
+        float x = sin(angle) * radius + displacement;
+        displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
         float y = displacement * 0.4f;
-        float z = sin(angle) * radius + displacement;
+        displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+        float z = cos(angle) * radius + displacement;
         model = translate(model, vec3(x,y,z));
 
         // 2. 缩放: 在0.05 和 0.25 之间缩放
@@ -160,7 +162,7 @@ int main()
 
         // 3. 旋转: 绕着一个随机选择的旋转轴进行随机的旋转
         float rot = (rand() % 360);
-        model = rotate(model, rot, vec3(0.3f, 0.6f, 0.9f));
+        model = rotate(model, rot, vec3(0.4f, 0.6f, 0.8f));
 
         // 4. 添加到矩阵的数组中
         modelMatrices[i] = model;

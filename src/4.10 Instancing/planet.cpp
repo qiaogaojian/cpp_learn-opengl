@@ -129,8 +129,39 @@ int main()
     // 加载模型
     //--------------------------------------------------------------------------------------
     stbi_set_flip_vertically_on_load(true); // 加载模型前翻转材质Y轴
-    char *modelPath = "/res/model/nanosuit/nanosuit.obj";
-    Model ourModel(concatString(_getcwd(NULL, 0), modelPath));
+    char *modelPath = "/res/model/planet/planet.obj";
+    Model modelPlanet(concatString(_getcwd(NULL, 0), modelPath));
+    modelPath = "/res/model/rock/rock.obj";
+    Model modelRock(concatString(_getcwd(NULL, 0), modelPath));
+
+    unsigned int amout = 1000;
+    mat4* modelMatrices;
+    modelMatrices = new mat4[amout];
+    srand(glfwGetTime());
+    float radius = 50.0f;
+    float offset = 2.5f;
+    for (unsigned int i = 0; i < amout; i++)
+    {
+        mat4 model;
+        // 1. 位移: 分布半径为radius的圆形上, 偏移范围是 [-offset, offset]
+        float angle = (float)i/(float)amout*360.0f;
+        float displacement = (rand()%(int)(2*offset*100))/100.0f - offset;
+        float x = cos(angle) * radius + displacement;
+        float y = displacement * 0.4f;
+        float z = sin(angle) * radius + displacement;
+        model = translate(model, vec3(x,y,z));
+
+        // 2. 缩放: 在0.05 和 0.25 之间缩放
+        float sca = (rand()%20) / 100.0f + 0.05;
+        model = scale(model, vec3(sca));
+
+        // 3. 旋转: 绕着一个随机选择的旋转轴进行随机的旋转
+        float rot = (rand() % 360);
+        model = rotate(model, rot, vec3(0.3f, 0.6f, 0.9f));
+
+        // 4. 添加到矩阵的数组中
+        modelMatrices[i] = model;
+    }
 
     // 发光体数据
     //--------------------------------------------------------------------------------------
@@ -193,11 +224,18 @@ int main()
 
         mat4 model = mat4(1.0f);
         model = translate(model, vec3(0.0f, 0.0f, 0.0f));
-        model = scale(model, vec3(0.1f, 0.1f, 0.1f));
+        model = scale(model, vec3(1.0f, 1.0f, 1.0f));
         ourShader.setMat4("model", model);
         ourShader.setMat3("normalMat", transpose(inverse(model)));
 
-        ourModel.Draw(ourShader);
+        modelPlanet.Draw(ourShader);
+
+        // 绘制小行星
+        for (unsigned int i = 0; i < amout; i++)
+        {
+            ourShader.setMat4("model",modelMatrices[i]);
+            modelRock.Draw(ourShader);
+        }
 
         // 绘制灯
         shaderLight.use();
@@ -215,7 +253,7 @@ int main()
         modelLight = scale(modelLight, vec3(0.2f));
         shaderLight.setMat4("model", modelLight);
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        // glDrawArrays(GL_TRIANGLES, 0, 36);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

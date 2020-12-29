@@ -10,9 +10,14 @@ const unsigned int SCR_WIDTH = 800;  // 屏幕宽度
 const unsigned int SCR_HEIGHT = 600; // 屏幕高度
 
 float vertices[] = {
-    0.5f, 0.5f, 0.0f,
-    -0.5f, 0.5f, 0.0f,
-    0.0f, -0.5f, 0.0f
+    // 位置          // 颜色
+    -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
+     0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
+    -0.05f, -0.05f,  0.0f, 0.0f, 1.0f,
+
+    -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
+     0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
+     0.05f,  0.05f,  0.0f, 1.0f, 1.0f
 };
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
@@ -67,10 +72,32 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     // 然后设置顶点属性
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(2 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
-    shaderLoader.use();                             // shaderLoader.use()之后设置
+    vec2 translations[100];
+    int index = 0;
+    float offset = 0.1f;
+    for(int y = -10; y < 10; y += 2)    // 从(0,0)开始
+    {
+        for(int x = -10; x < 10; x += 2)
+        {
+            vec2 translation;
+            translation.x = (float)x / 10.0f + offset;
+            translation.y = (float)y / 10.0f + offset;
+            translations[index++] = translation;
+        }
+    }
+
+    shaderLoader.use();
+    for (int i = 0; i < 100; i++)
+    {
+        stringstream offset;
+        offset << "offsets[" << i << "]";
+        shaderLoader.setVec2(offset.str(),translations[i]);
+    }                       // shaderLoader.use()之后设置
     vec4 colorC = vec4(0.68f, 0.51f, 1.0f, 1.0f);
     shaderLoader.setVec4("colorC", colorC);         // uniform 在 while 循环之前和循环中都要设置
 
@@ -85,7 +112,7 @@ int main()
 
         shaderLoader.use();
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 100);
 
         // 检查并调用事件，交换缓冲完成绘制
         glfwPollEvents();        // 检查有没有触发什么事件（比如键盘输入、鼠标移动等）、更新窗口状态，并调用对应的回调函数（可以通过回调方法手动设置）

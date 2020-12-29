@@ -5,9 +5,9 @@
 #include "stb_image.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
 #include <direct.h>
 #include <iostream>
+#include "tools.h"
 using namespace std;
 using namespace glm;
 
@@ -34,19 +34,7 @@ float vertices[] = {
      10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,  10.0f, 10.0f
 };
 
-vec3 cubePositions[] = {
-    glm::vec3(0.0f, 0.0f, 0.0f),
-    glm::vec3(2.0f, 5.0f, -15.0f),
-    glm::vec3(-1.5f, -2.2f, -2.5f),
-    glm::vec3(-3.8f, -2.0f, -12.3f),
-    glm::vec3(2.4f, -0.4f, -3.5f),
-    glm::vec3(-1.7f, 3.0f, -7.5f),
-    glm::vec3(1.3f, -2.0f, -2.5f),
-    glm::vec3(1.5f, 2.0f, -2.5f),
-    glm::vec3(1.5f, 0.2f, -1.5f),
-    glm::vec3(-1.3f, 1.0f, -1.5f)};
-
-vec3 lightPos(1.2f, 1.0f, 2.0f);
+vec3 lightPos(0.0f, 0.0f, 0.0f);
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -110,29 +98,16 @@ int main()
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
-    // 发光物体缓冲数据 // 不用也行 只要 shader program是独立的就不会影响到发光物体
-    // unsigned int lightVAO;
-    // unsigned int lightVBO;
-    // // 生成 VAO VBO
-    // glGenVertexArrays(1, &lightVAO);
-    // glGenBuffers(1, &lightVBO);
-    // // 首先绑定VAO
-    // glBindVertexArray(lightVAO);
-    // // 然后绑定并设置VBO
-    // glBindBuffer(GL_ARRAY_BUFFER, lightVBO);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // // 然后设置顶点属性
-    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)(0));
-    // glEnableVertexAttribArray(0);
+    string texPath = shaderObject.concatString(getcwd(NULL, 0), "/res/texture/wood.png");
+    unsigned int texture = loadTexture(texPath.c_str());
 
     shaderObject.use();
-    shaderObject.setVec3("objectColor", vec3(1.0f, 0.5f, 0.31f));
     shaderObject.setVec3("lightColor", vec3(1.0f, 1.0f, 1.0f));
     shaderObject.setVec3("lightPos",lightPos);
+    shaderObject.setInt("texture_diffuse",0);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // 隐藏鼠标
     glfwSetCursorPosCallback(window, mouse_callback);
@@ -159,27 +134,10 @@ int main()
         shaderObject.setMat4("projection", projection);
         shaderObject.setMat4("view", camera.GetViewMatrix());
 
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture);
         glBindVertexArray(VAO);
-        for (int i = 0; i < 1; i++)
-        {
-            mat4 model = mat4(1.0f);
-            model = translate(model, cubePositions[i]);
-            model = rotate(model, radians(20.0f * i), glm::vec3(1.0f, 0.3f, 0.5f));
-            shaderObject.setMat4("model", model);
-            shaderObject.setMat3("normalMat",transpose(inverse(model)));
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
-
-        // 绘制灯
-        shaderLight.use();
-        shaderLight.setMat4("projection", projection);
-        shaderLight.setMat4("view", camera.GetViewMatrix());
-        mat4 modelLight = mat4(1.0f);
-        modelLight = translate(modelLight, lightPos);
-        modelLight = scale(modelLight, vec3(0.2f));
-        shaderLight.setMat4("model", modelLight);
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         // 检查并调用事件，交换缓冲完成绘制
         glfwPollEvents();        // 检查有没有触发什么事件（比如键盘输入、鼠标移动等）、更新窗口状态，并调用对应的回调函数（可以通过回调方法手动设置）

@@ -125,6 +125,9 @@ int main()
     ShaderLoader ourShader(vsPath, fsPath);
     char *fsLightPath = "/src/2.3 Materials/light.fs";
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序
+    vsPath = "/src/4.10 Instancing/rock.vs";
+    fsPath = "/src/4.10 Instancing/rock.fs";
+    ShaderLoader shaderRock(vsPath, fsPath);
 
     // 加载模型
     //--------------------------------------------------------------------------------------
@@ -134,7 +137,7 @@ int main()
     modelPath = "/res/model/rock/rock.obj";
     Model modelRock(concatString(_getcwd(NULL, 0), modelPath));
 
-    unsigned int amout = 1000;
+    unsigned int amout = 100000;
     mat4* modelMatrices;
     modelMatrices = new mat4[amout];
     srand(glfwGetTime());
@@ -161,6 +164,33 @@ int main()
 
         // 4. 添加到矩阵的数组中
         modelMatrices[i] = model;
+    }
+
+    unsigned int modelVBO;
+    glGenBuffers(1, &modelVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, modelVBO);
+    glBufferData(GL_ARRAY_BUFFER, amout*sizeof(mat4), &modelMatrices[0],GL_STATIC_DRAW);
+
+    for (unsigned int i = 0; i < modelRock.meshes.size(); i++)
+    {
+        unsigned int VAO = modelRock.meshes[i].VAO;
+        glBindVertexArray(VAO);
+
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3,4,GL_FLOAT,GL_FALSE, sizeof(mat4),(void*)0);
+        glEnableVertexAttribArray(4);
+        glVertexAttribPointer(4,4,GL_FLOAT,GL_FALSE, sizeof(mat4),(void*)(1*sizeof(vec4)));
+        glEnableVertexAttribArray(5);
+        glVertexAttribPointer(5,4,GL_FLOAT,GL_FALSE, sizeof(mat4),(void*)(2*sizeof(vec4)));
+        glEnableVertexAttribArray(6);
+        glVertexAttribPointer(6,4,GL_FLOAT,GL_FALSE, sizeof(mat4),(void*)(3*sizeof(vec4)));
+
+        glVertexAttribDivisor(3,1);
+        glVertexAttribDivisor(4,1);
+        glVertexAttribDivisor(5,1);
+        glVertexAttribDivisor(6,1);
+
+        glBindVertexArray(0);
     }
 
     // 发光体数据
@@ -231,10 +261,18 @@ int main()
         modelPlanet.Draw(ourShader);
 
         // 绘制小行星
-        for (unsigned int i = 0; i < amout; i++)
+        shaderRock.use();
+        shaderRock.setMat4("projection", projection);
+        shaderRock.setMat4("view", camera.GetViewMatrix());
+
+        shaderRock.setInt("texture_diffuse1", 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D,modelRock.textures_loaded[0].id);
+        for (unsigned int i = 0; i < modelRock.meshes.size(); i++)
         {
-            ourShader.setMat4("model",modelMatrices[i]);
-            modelRock.Draw(ourShader);
+            glBindVertexArray(modelRock.meshes[i].VAO);
+            glDrawElementsInstanced(GL_TRIANGLES, modelRock.meshes[i].indices.size(),GL_UNSIGNED_INT,0,amout);
+            glBindVertexArray(0);
         }
 
         // 绘制灯

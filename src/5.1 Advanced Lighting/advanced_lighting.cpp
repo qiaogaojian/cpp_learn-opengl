@@ -34,7 +34,7 @@ float vertices[] = {
      10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,  10.0f, 10.0f
 };
 
-vec3 lightPos(0.0f, 0.0f, 0.0f);
+vec3 lightPos(0.0f, 1.0f, 0.0f);
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);

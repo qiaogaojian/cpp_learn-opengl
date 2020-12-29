@@ -208,6 +208,7 @@ int main()
         normalShader.use();
         normalShader.setMat4("projection", projection);
         normalShader.setMat4("view", camera.GetViewMatrix());
+        normalShader.setFloat("MAGNITUDE", 0.03f);
         model = mat4(1.0f);
         model = scale(model, vec3(0.1f, 0.1f, 0.1f));
         normalShader.setMat4("model", model);

@@ -6,7 +6,7 @@ in VS_OUT{
     vec4 Normal;
 } gin[];
 
-const float MAGNITUDE = 0.03;
+uniform float MAGNITUDE;
 
 void GenerateLine(int index){
     gl_Position = gl_in[index].gl_Position;

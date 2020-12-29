@@ -149,11 +149,11 @@ int main()
         // 1. 位移: 分布半径为radius的圆形上, 偏移范围是 [-offset, offset]
         float angle = (float)i/(float)amout*360.0f;
         float displacement = (rand()%(int)(2*offset*100))/100.0f - offset;
-        float x = sin(angle) * radius + displacement;
+        float x = cos(angle) * radius + displacement;
         displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
         float y = displacement * 0.4f;
         displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
-        float z = cos(angle) * radius + displacement;
+        float z = sin(angle) * radius + displacement;
         model = translate(model, vec3(x,y,z));
 
         // 2. 缩放: 在0.05 和 0.25 之间缩放

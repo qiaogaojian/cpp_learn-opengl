@@ -4,16 +4,16 @@ layout(location=1)in vec3 aNormal;
 layout(location=2)in vec2 aTexCoord;
 
 out VS_OUT{
-    vec3 Normal;
+    vec4 Normal;
 }vs_out;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-uniform mat3 normalMat;// 法线矩阵 用来消除不同比例缩放对法线方向的影响
 
 void main()
 {
     gl_Position=projection*view*model*vec4(aPos,1.);
-    vs_out.Normal= normalize(vec3(projection * vec4((normalMat*aNormal), 0.0)));
+    mat4 normalMatrix = mat4(transpose(inverse(view * model)));
+    vs_out.Normal= normalize(projection * normalMatrix * vec4(aNormal, 0.0));
 }

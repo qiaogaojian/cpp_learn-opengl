@@ -93,7 +93,7 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_SAMPLES, 4);
+    // glfwWindowHint(GLFW_SAMPLES, 4);
     //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);  // 如果使用的是Mac OS X系统 需要解注释这行代码
 
     // 创建窗口对象
@@ -144,6 +144,60 @@ int main()
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
+    char *vsScreenPath = "/src/4.11 Anti Aliasing/anti_aliasing_screen.vs";
+    char *fsScreenPath = "/src/4.11 Anti Aliasing/anti_aliasing_screen.fs";
+    ShaderLoader shaderScreen(vsScreenPath, fsScreenPath, nullptr);
+
+    float quadVertices[] = {
+        // positions   // texCoords
+        -1.0f, 1.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f, 0.0f, 0.0f,
+        1.0f, -1.0f, 1.0f, 0.0f,
+
+        -1.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, -1.0f, 1.0f, 0.0f,
+        1.0f, 1.0f, 1.0f, 1.0f};
+
+    // screen VAO   帧缓冲: 创建承载帧缓冲的四边形
+    unsigned int screenVAO, screenVBO;  // 注意区分 VBO 和 EBO
+    glGenVertexArrays(1, &screenVAO);
+    glGenBuffers(1, &screenVBO);
+    glBindVertexArray(screenVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, screenVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)(2 * sizeof(float)));
+    glBindVertexArray(0);
+
+    // 帧缓冲
+    unsigned int framebuffer;
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+    unsigned int texScreen;
+    glGenTextures(1, &texScreen);
+    glBindTexture(GL_TEXTURE_2D, texScreen);
+    glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,SCR_WIDTH,SCR_HEIGHT,0,GL_RGB,GL_UNSIGNED_BYTE,NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,texScreen,0);
+
+    unsigned int rbo;
+    glGenRenderbuffers(1, &rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH,SCR_HEIGHT);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_STENCIL_ATTACHMENT,GL_RENDERBUFFER,rbo);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
+        cout<<"ERROR::FrameBuffer::FrameBuffer is not complete!"<<endl;
+    }
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
     shaderObject.use();
     shaderObject.setVec3("objectColor", vec3(1.0f, 0.5f, 0.31f));
     shaderObject.setVec3("lightColor", vec3(1.0f, 1.0f, 1.0f));
@@ -153,7 +207,9 @@ int main()
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
-    glEnable(GL_MULTISAMPLE);
+    // glEnable(GL_MULTISAMPLE);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -162,6 +218,9 @@ int main()
         float time = (float)glfwGetTime();
         deltaTime = time - lastFrame;
         lastFrame = time;
+
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        glEnable(GL_DEPTH_TEST);
 
         //处理渲染
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);               // 设置状态
@@ -186,6 +245,19 @@ int main()
             shaderObject.setMat3("normalMat",transpose(inverse(model)));
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
+
+        // 绘制帧缓冲
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glDisable(GL_DEPTH_TEST);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texScreen);
+
+        shaderScreen.use();
+        glBindVertexArray(screenVAO);
+        glDrawArrays(GL_TRIANGLES,0,6);
 
         // 绘制灯
         shaderLight.use();

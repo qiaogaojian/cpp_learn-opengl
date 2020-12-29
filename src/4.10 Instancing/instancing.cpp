@@ -90,14 +90,26 @@ int main()
             translations[index++] = translation;
         }
     }
+    // 使用实例化数组 避免uniform数据传输限制
+    unsigned int instanceVBO;
+    glGenBuffers(1, &instanceVBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vec2) * 100, &translations[0], GL_STATIC_DRAW);
+
+    glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE, 2*sizeof(float),(void*)0);
+    glEnableVertexAttribArray(2);
+    glVertexAttribDivisor(2,1);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     shaderLoader.use();
-    for (int i = 0; i < 100; i++)
-    {
-        stringstream offset;
-        offset << "offsets[" << i << "]";
-        shaderLoader.setVec2(offset.str(),translations[i]);
-    }                       // shaderLoader.use()之后设置
+    // for (int i = 0; i < 100; i++)
+    // {
+    //     stringstream offset;
+    //     offset << "offsets[" << i << "]";
+    //     shaderLoader.setVec2(offset.str(),translations[i]);
+    // }                       // shaderLoader.use()之后设置
     vec4 colorC = vec4(0.68f, 0.51f, 1.0f, 1.0f);
     shaderLoader.setVec4("colorC", colorC);         // uniform 在 while 循环之前和循环中都要设置
 

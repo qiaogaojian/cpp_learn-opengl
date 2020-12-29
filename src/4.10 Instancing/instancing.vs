@@ -11,6 +11,6 @@ uniform vec2 offsets[100];
 
 void main()
 {
-    gl_Position=vec4(aPos+offsets[gl_InstanceID],0.0,1.f);
+    gl_Position=vec4(aPos+offset,0.0,1.f);
     posColor = aColor;
 }

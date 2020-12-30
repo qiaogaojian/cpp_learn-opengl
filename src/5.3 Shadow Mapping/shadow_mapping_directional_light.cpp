@@ -89,8 +89,8 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    char *vsPath = "/src/5.3 Shadow Mapping/shadow_mapping_directional_light.vs";
-    char *fsPath = "/src/5.3 Shadow Mapping/shadow_mapping_directional_light.fs";
+    char *vsPath = "/src/5.3 Shadow Mapping/shadow_mapping_texture.vs";
+    char *fsPath = "/src/5.3 Shadow Mapping/shadow_mapping_texture.fs";
     ShaderLoader simpleDepthShader(vsPath, fsPath, nullptr);
     vsPath = "/src/5.3 Shadow Mapping/depth_debug.vs";
     fsPath = "/src/5.3 Shadow Mapping/depth_debug.fs";

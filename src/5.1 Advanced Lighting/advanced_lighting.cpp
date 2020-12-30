@@ -22,6 +22,8 @@ float lastFrame = 0.0f;
 float lastX = SCR_WIDTH / 2;
 float lastY = SCR_HEIGHT / 2;
 bool isFirstCursor = true;
+bool isBlinn = false;
+bool isPressing = false;
 
 float vertices[] = {
     // positions            // normals         // texcoords
@@ -109,7 +111,7 @@ int main()
     shaderObject.setVec3("lightPos",lightPos);
     shaderObject.setInt("texture_diffuse",0);
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // 隐藏鼠标
+    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // 隐藏鼠标
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
@@ -128,6 +130,7 @@ int main()
 
         // 绘制物体
         shaderObject.use();
+        shaderObject.setBool("blinn",isBlinn);
         shaderObject.setVec3("viewPos",camera.Position);
         mat4 projection = mat4(1.0f);
         projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
@@ -195,6 +198,18 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
     {
         camera.ProcessKeyboard(UP, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    {
+        if (!isPressing)
+        {
+            isBlinn = !isBlinn;
+        }
+        isPressing = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)
+    {
+        isPressing = false;
     }
 }
 

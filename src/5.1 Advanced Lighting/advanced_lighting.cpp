@@ -23,7 +23,7 @@ float lastX = SCR_WIDTH / 2;
 float lastY = SCR_HEIGHT / 2;
 bool isFirstCursor = true;
 bool isBlinn = false;
-bool isPressing = false;
+bool isBlinnPressing = false;
 
 float vertices[] = {
     // positions            // normals         // texcoords
@@ -201,15 +201,15 @@ void processInput(GLFWwindow *window)
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
     {
-        if (!isPressing)
+        if (!isBlinnPressing)
         {
             isBlinn = !isBlinn;
         }
-        isPressing = true;
+        isBlinnPressing = true;
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)
     {
-        isPressing = false;
+        isBlinnPressing = false;
     }
 }
 

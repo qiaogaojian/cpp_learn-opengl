@@ -23,7 +23,9 @@ float lastX = SCR_WIDTH / 2;
 float lastY = SCR_HEIGHT / 2;
 bool isFirstCursor = true;
 bool isBlinn = false;
-bool isPressing = false;
+bool isGamma = false;
+bool isBlinnPressing = false;
+bool isGammaPressing = false;
 
 float vertices[] = {
     // positions            // normals         // texcoords
@@ -104,7 +106,8 @@ int main()
     glEnableVertexAttribArray(2);
 
     string texPath = shaderObject.concatString(getcwd(NULL, 0), "/res/texture/wood.png");
-    unsigned int texture = loadTexture(texPath.c_str());
+    unsigned int texture = loadTexture(texPath.c_str(),false);
+    unsigned int textureGamma = loadTexture(texPath.c_str(),true);
 
     shaderObject.use();
     shaderObject.setVec3("lightColor", vec3(1.0f, 1.0f, 1.0f));
@@ -131,6 +134,7 @@ int main()
         // 绘制物体
         shaderObject.use();
         shaderObject.setBool("blinn",isBlinn);
+        shaderObject.setBool("gamma",isGamma);
         shaderObject.setVec3("viewPos",camera.Position);
         mat4 projection = mat4(1.0f);
         projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
@@ -138,9 +142,10 @@ int main()
         shaderObject.setMat4("view", camera.GetViewMatrix());
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glBindTexture(GL_TEXTURE_2D, isGamma ? textureGamma : texture);
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 6);
+        std::cout << (isGamma ? "Gamma enabled" : "Gamma disabled") << std::endl;
 
         // 检查并调用事件，交换缓冲完成绘制
         glfwPollEvents();        // 检查有没有触发什么事件（比如键盘输入、鼠标移动等）、更新窗口状态，并调用对应的回调函数（可以通过回调方法手动设置）
@@ -201,15 +206,27 @@ void processInput(GLFWwindow *window)
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
     {
-        if (!isPressing)
+        if (!isBlinnPressing)
         {
             isBlinn = !isBlinn;
         }
-        isPressing = true;
+        isBlinnPressing = true;
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)
     {
-        isPressing = false;
+        isBlinnPressing = false;
+    }
+    if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
+    {
+        if (!isGammaPressing)
+        {
+            isGamma = !isGamma;
+        }
+        isGammaPressing = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_G) == GLFW_RELEASE)
+    {
+        isGammaPressing = false;
     }
 }
 

@@ -92,9 +92,9 @@ int main()
     char *vsPath = "/src/5.3 Shadow Mapping/shadow_mapping_texture.vs";
     char *fsPath = "/src/5.3 Shadow Mapping/shadow_mapping_texture.fs";
     ShaderLoader simpleDepthShader(vsPath, fsPath, nullptr);
-    vsPath = "/src/5.3 Shadow Mapping/depth_debug.vs";
-    fsPath = "/src/5.3 Shadow Mapping/depth_debug.fs";
-    ShaderLoader debugDepthQuad(vsPath, fsPath, nullptr);
+    vsPath = "/src/5.3 Shadow Mapping/shadow_mapping_directional_light.vs";
+    fsPath = "/src/5.3 Shadow Mapping/shadow_mapping_directional_light.fs";
+    ShaderLoader shaderShadow(vsPath, fsPath, nullptr);
 
     // load textures
     // -------------
@@ -125,8 +125,9 @@ int main()
 
     // shader configuration
     // --------------------
-    debugDepthQuad.use();
-    debugDepthQuad.setInt("depthMap", 0);
+    shaderShadow.use();
+    shaderShadow.setInt("diffuseTexture", 0);
+    shaderShadow.setInt("shadowMap", 1);
     simpleDepthShader.use();
     simpleDepthShader.setInt("tex", 0);
 
@@ -167,9 +168,6 @@ int main()
         lightSpaceMatrix = lightProjection * lightView;
         // render scene from light's point of view
         simpleDepthShader.use();
-        mat4 view = camera.GetViewMatrix();
-        mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        // simpleDepthShader.setMat4("lightSpaceMatrix", projection*view);
         simpleDepthShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
 
         renderScene(simpleDepthShader);
@@ -181,12 +179,17 @@ int main()
 
         // render Depth map to quad for visual debugging
         // ---------------------------------------------
-        debugDepthQuad.use();
-        debugDepthQuad.setFloat("near_plane", near_plane);
-        debugDepthQuad.setFloat("far_plane", far_plane);
-        glActiveTexture(GL_TEXTURE0);
+        shaderShadow.use();
+        mat4 view = camera.GetViewMatrix();
+        mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        shaderShadow.setMat4("projection", projection);
+        shaderShadow.setMat4("view", view);
+        shaderShadow.setVec3("viewPos", camera.Position);
+        shaderShadow.setVec3("lightPos", lightPos);
+        shaderShadow.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, depthMap);
-        renderQuad();
+        renderScene(shaderShadow);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

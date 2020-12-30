@@ -91,6 +91,9 @@ void renderCube(ShaderLoader shaderObject);
 mat4 projection = mat4(1.0f);
 unsigned int VAO;
 unsigned int VBO;
+unsigned int texture_specular;
+unsigned int texture;
+
 int main()
 {
     // 初始化和配置 glfw
@@ -151,11 +154,11 @@ int main()
 
     // 第一个材质 漫反射贴图
     string texPath = shaderObject.concatString(getcwd(NULL, 0), "/res/texture/box2.png");
-    unsigned int texture = loadTexture(texPath.c_str());
+    texture = loadTexture(texPath.c_str());
 
     // 第二个材质 镜面反射贴图
     texPath = shaderObject.concatString(getcwd(NULL, 0), "/res/texture/box2_specular.png");
-    unsigned int texture_specular = loadTexture(texPath.c_str());
+    texture_specular = loadTexture(texPath.c_str());
 
     shaderObject.use();
     shaderObject.setInt("material.diffuse",0);
@@ -181,24 +184,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 使用状态
         glEnable(GL_DEPTH_TEST);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        // 别忘了激活第二个材质
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture_specular);
-
         renderCube(shaderObject);
-
-        glBindVertexArray(VAO);
-        for (int i = 0; i < 10; i++)
-        {
-            mat4 model = mat4(1.0f);
-            model = translate(model, cubePositions[i]);
-            model = rotate(model, radians(20.0f * i), glm::vec3(1.0f, 0.3f, 0.5f));
-            shaderObject.setMat4("model", model);
-            shaderObject.setMat3("normalMat", transpose(inverse(model)));
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
 
         // 绘制灯
         shaderLight.use();
@@ -230,6 +216,12 @@ int main()
 }
 
 void renderCube(ShaderLoader shaderObject){
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        // 别忘了激活第二个材质
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture_specular);
+
         shaderObject.use();
 
         vec3 lightColor = vec3(1.0f);
@@ -248,7 +240,6 @@ void renderCube(ShaderLoader shaderObject){
         shaderObject.setVec4("light.direction", -vec4(lightPos, 0.0f));
 
         shaderObject.setVec3("viewPos", camera.Position);
-        mat4 projection = mat4(1.0f);
         projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
         shaderObject.setMat4("projection", projection);
         shaderObject.setMat4("view", camera.GetViewMatrix());

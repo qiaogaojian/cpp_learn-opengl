@@ -171,7 +171,7 @@ int main()
         // render scene from light's point of view
         simpleDepthShader.use();
         simpleDepthShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
-        glEnable(GL_CULL_FACE);
+        // glEnable(GL_CULL_FACE);
         glCullFace(GL_FRONT);
         renderScene(simpleDepthShader);
         glCullFace(GL_BACK);

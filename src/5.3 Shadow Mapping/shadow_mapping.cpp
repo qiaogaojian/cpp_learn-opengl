@@ -165,14 +165,14 @@ int main()
         mat4 lightProjection, lightView;
         mat4 lightSpaceMatrix;
         float near_plane = 1.0f, far_plane = 7.5f;
-        // lightProjection = ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-        lightProjection = perspective(radians(camera.Zoom), (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, near_plane, far_plane);
+        lightProjection = ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+        // lightProjection = perspective(radians(camera.Zoom), (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, near_plane, far_plane);
         lightView = lookAt(lightPos, vec3(0.0f), vec3(0.0, 1.0, 0.0));
         lightSpaceMatrix = lightProjection * lightView;
         // render scene from light's point of view
         simpleDepthShader.use();
         simpleDepthShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
-        // glEnable(GL_CULL_FACE);
+        glEnable(GL_CULL_FACE);
         glCullFace(GL_FRONT);
         renderScene(simpleDepthShader);
         glCullFace(GL_BACK);

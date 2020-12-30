@@ -165,7 +165,8 @@ int main()
         mat4 lightProjection, lightView;
         mat4 lightSpaceMatrix;
         float near_plane = 1.0f, far_plane = 7.5f;
-        lightProjection = ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+        // lightProjection = ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+        lightProjection = perspective(radians(camera.Zoom), (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, near_plane, far_plane);
         lightView = lookAt(lightPos, vec3(0.0f), vec3(0.0, 1.0, 0.0));
         lightSpaceMatrix = lightProjection * lightView;
         // render scene from light's point of view
@@ -186,7 +187,7 @@ int main()
         // ---------------------------------------------
         shaderShadow.use();
         mat4 view = camera.GetViewMatrix();
-        mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        mat4 projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         shaderShadow.setMat4("projection", projection);
         shaderShadow.setMat4("view", view);
         shaderShadow.setVec3("viewPos", camera.Position);

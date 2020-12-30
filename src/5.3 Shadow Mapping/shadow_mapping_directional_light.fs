@@ -31,7 +31,17 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     vec3 lightDir = normalize(lightPos - fs_in.FragPos);
     float bias = max(0.05*(1.0-dot(fs_in.Normal,lightDir)), 0.005);
     // 检查当前片段是否在阴影中
-    float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(shadowMap, 0); // 这个textureSize返回一个给定采样器纹理的0级mipmap的vec2类型的宽和高(很小很小的值)
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
+            shadow += currentDepth - bias > pcfDepth  ? 1.0 : 0.0;
+        }
+    }
+    shadow /= 9.0;
 
     return shadow;
 }

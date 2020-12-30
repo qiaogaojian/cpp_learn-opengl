@@ -13,6 +13,8 @@ using namespace glm;
 
 const unsigned int SCR_WIDTH = 800;  // 屏幕宽度
 const unsigned int SCR_HEIGHT = 600; // 屏幕高度
+const unsigned int SHADOW_WIDTH = 1000; // 屏幕高度
+const unsigned int SHADOW_HEIGHT = 1000; // 屏幕高度
 
 vec3 cameraPos = vec3(1.0f, 0, 5.0f);
 Camera camera(cameraPos, vec3(0.0f, 1.0f, 0.0f), -100, 0);
@@ -97,6 +99,17 @@ void processInput(GLFWwindow *window);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 unsigned int loadTexture(char const * path);
+void renderFloor(ShaderLoader shaderObject);
+void renderCube (ShaderLoader shaderObject);
+void renderLight(ShaderLoader shaderLight);
+
+unsigned int texture;
+unsigned int texture_specular;
+unsigned int texture_floor;
+unsigned VAO;
+unsigned VBO;
+unsigned VAOfloor;
+unsigned VBOfloor;
 
 int main()
 {
@@ -139,8 +152,6 @@ int main()
     // 设置顶点数据 配置顶点属性
     //--------------------------------------------------------------------------------------
     // 受光物体缓冲数据
-    unsigned int VAO;
-    unsigned int VBO;
     // 生成 VAO VBO
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -160,17 +171,15 @@ int main()
 
     // 第一个材质 漫反射贴图
     string texPath = shaderObject.concatString(getcwd(NULL, 0), "/res/texture/box2.png");
-    unsigned int texture = loadTexture(texPath.c_str());
+    texture = loadTexture(texPath.c_str());
 
     // 第二个材质 镜面反射贴图
     texPath = shaderObject.concatString(getcwd(NULL, 0), "/res/texture/box2_specular.png");
-    unsigned int texture_specular = loadTexture(texPath.c_str());
+    texture_specular = loadTexture(texPath.c_str());
 
     texPath = shaderObject.concatString(getcwd(NULL, 0), "/res/texture/wood.png");
-    unsigned int texture_floor = loadTexture(texPath.c_str());
+    texture_floor = loadTexture(texPath.c_str());
 
-    unsigned VAOfloor;
-    unsigned VBOfloor;
     glGenVertexArrays(1, &VAOfloor);
     glGenBuffers(1, &VBOfloor);
     glBindVertexArray(VAOfloor);
@@ -183,6 +192,23 @@ int main()
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
+
+    unsigned depthFramebuffer;
+    glGenFramebuffers(1, &depthFramebuffer);
+
+    unsigned depthTexMap;
+    glGenTextures(1, &depthTexMap);
+    glBindTexture(GL_TEXTURE_2D, depthTexMap);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT,NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    // glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
+    // glFramebufferTexture2D(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_TEXTURE_2D,depthTexMap,0);
+    // glDrawBuffer(GL_NONE);
+    // glReadBuffer(GL_NONE);
 
     shaderObject.use();
     shaderObject.setInt("material.diffuse",0);  // 设置漫反射材质id
@@ -209,6 +235,36 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 使用状态
         glEnable(GL_DEPTH_TEST);
 
+        // glViewport(0,0,SHADOW_WIDTH,SHADOW_HEIGHT);
+        // glBindFramebuffer(GL_FRAMEBUFFER, depthFramebuffer);
+
+        renderFloor(shaderObject);
+        renderCube(shaderObject);
+        renderLight(shaderLight);
+
+        // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // glViewport(0,0,SCR_WIDTH,SCR_HEIGHT);
+        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 使用状态
+        // glBindTexture(GL_TEXTURE_2D,depthTexMap);
+
+        // 检查并调用事件，交换缓冲完成绘制
+        glfwPollEvents();        // 检查有没有触发什么事件（比如键盘输入、鼠标移动等）、更新窗口状态，并调用对应的回调函数（可以通过回调方法手动设置）
+        glfwSwapBuffers(window); // 双缓冲交换颜色缓冲（它是一个储存着GLFW窗口每一个像素颜色值的大缓冲），它在这一迭代中被用来绘制，并且将会作为输出显示在屏幕上
+    }
+
+    // 释放资源
+    //--------------------------------------------------------------------------------------
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    // glDeleteVertexArrays(1, &lightVAO);
+    // glDeleteBuffers(1, &lightVBO);
+
+    // 释放GLFW资源
+    glfwTerminate(); // 当渲染循环结束后我们需要正确释放/删除之前的分配的所有资源 这样便能清理所有的资源并正确地退出应用程序
+    return 0;
+}
+
+void renderCube(ShaderLoader shaderObject){
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
         // 别忘了激活第二个材质
@@ -249,19 +305,56 @@ int main()
             shaderObject.setMat3("normalMat", transpose(inverse(model)));
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
+}
+
+
+void renderFloor(ShaderLoader shaderObject){
+        // 绘制物体
+        shaderObject.use();
+
+        vec3 lightColor = vec3(1.0f);
+        lightColor.x = sin(glfwGetTime() * 2.0f);
+        lightColor.y = sin(glfwGetTime() * 0.7f);
+        lightColor.z = sin(glfwGetTime() * 1.3f);
+        vec3 ambientColor = lightColor * 0.2f;
+        vec3 spotColor = vec3(0.5f, 0.5f, 0.5f);
+
+        // 材质设置(各个类型光照的颜色和反光度)
+        shaderObject.setFloat("material.shininess", 0.25f * 128);
+        // 光照设置(光照位置和光照强度)
+        shaderObject.setVec3("light.ambient", vec3(1.0f));
+        shaderObject.setVec3("light.diffuse", vec3(1.0f));
+        shaderObject.setVec3("light.specular", vec3(1.0f));
+        shaderObject.setVec4("light.direction", -vec4(lightPos, 0.0f));
+
+        shaderObject.setVec3("viewPos", camera.Position);
+        mat4 projection = mat4(1.0f);
+        projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
+        shaderObject.setMat4("projection", projection);
+        shaderObject.setMat4("view", camera.GetViewMatrix());
 
         shaderObject.use();
         mat4 model = mat4(1.0f);
         shaderObject.setMat4("model", model);
         shaderObject.setMat3("normalMat", transpose(inverse(model)));
-
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture_floor);
 
         glBindVertexArray(VAOfloor);
         glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
+void renderLight(ShaderLoader shaderLight){
+        vec3 lightColor = vec3(1.0f);
+        lightColor.x = sin(glfwGetTime() * 2.0f);
+        lightColor.y = sin(glfwGetTime() * 0.7f);
+        lightColor.z = sin(glfwGetTime() * 1.3f);
+        vec3 ambientColor = lightColor * 0.2f;
+        vec3 spotColor = vec3(0.5f, 0.5f, 0.5f);
 
         // 绘制灯
+        mat4 projection = mat4(1.0f);
+        projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
         shaderLight.use();
         shaderLight.setVec3("lightColor", vec3(1.0f));
         shaderLight.setMat4("projection", projection);
@@ -272,22 +365,6 @@ int main()
         shaderLight.setMat4("model", modelLight);
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-
-        // 检查并调用事件，交换缓冲完成绘制
-        glfwPollEvents();        // 检查有没有触发什么事件（比如键盘输入、鼠标移动等）、更新窗口状态，并调用对应的回调函数（可以通过回调方法手动设置）
-        glfwSwapBuffers(window); // 双缓冲交换颜色缓冲（它是一个储存着GLFW窗口每一个像素颜色值的大缓冲），它在这一迭代中被用来绘制，并且将会作为输出显示在屏幕上
-    }
-
-    // 释放资源
-    //--------------------------------------------------------------------------------------
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    // glDeleteVertexArrays(1, &lightVAO);
-    // glDeleteBuffers(1, &lightVBO);
-
-    // 释放GLFW资源
-    glfwTerminate(); // 当渲染循环结束后我们需要正确释放/删除之前的分配的所有资源 这样便能清理所有的资源并正确地退出应用程序
-    return 0;
 }
 
 // 窗口大小改变时 调整视口大小

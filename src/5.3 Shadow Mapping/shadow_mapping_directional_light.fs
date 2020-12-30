@@ -24,8 +24,11 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     float closestDepth = texture(shadowMap, projCoords.xy).r;
     // 取得当前片段在光源视角下的深度
     float currentDepth = projCoords.z;
+    // 一个0.005的偏移就能帮到很大的忙，但是有些表面坡度很大，仍然会产生阴影失真。有一个更加可靠的办法能够根据表面朝向光线的角度更改偏移量：使用点乘
+    vec3 lightDir = normalize(lightPos - fs_in.FragPos);
+    float bias = max(0.05*(1.0-dot(fs_in.Normal,lightDir)), 0.005);
     // 检查当前片段是否在阴影中
-    float shadow = currentDepth - 0.05 > closestDepth  ? 1.0 : 0.0;
+    float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
 
     return shadow;
 }
@@ -36,7 +39,7 @@ void main()
     vec3 normal = normalize(fs_in.Normal);
     vec3 lightColor = vec3(1.0);
     // Ambient
-    vec3 ambient = 0.15 * color;
+    vec3 ambient = 0.5 * color;
     // Diffuse
     vec3 lightDir = normalize(lightPos - fs_in.FragPos);
     float diff = max(dot(lightDir, normal), 0.0);

@@ -23,6 +23,16 @@ float lastX = SCR_WIDTH / 2;
 float lastY = SCR_HEIGHT / 2;
 bool isFirstCursor = true;
 
+float verticesFloor[] = {
+    // positions            // normals         // texcoords
+    10.0f, -0.5f, 10.0f, 0.0f, 1.0f, 0.0f, 10.0f, 0.0f,
+    -10.0f, -0.5f, 10.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+    -10.0f, -0.5f, -10.0f, 0.0f, 1.0f, 0.0f, 0.0f, 10.0f,
+
+    10.0f, -0.5f, 10.0f, 0.0f, 1.0f, 0.0f, 10.0f, 0.0f,
+    -10.0f, -0.5f, -10.0f, 0.0f, 1.0f, 0.0f, 0.0f, 10.0f,
+    10.0f, -0.5f, -10.0f, 0.0f, 1.0f, 0.0f, 10.0f, 10.0f};
+
 float vertices[] = {
     // positions          // normals           // texture coords
     -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
@@ -156,6 +166,24 @@ int main()
     texPath = shaderObject.concatString(getcwd(NULL, 0), "/res/texture/box2_specular.png");
     unsigned int texture_specular = loadTexture(texPath.c_str());
 
+    texPath = shaderObject.concatString(getcwd(NULL, 0), "/res/texture/wood.png");
+    unsigned int texture_floor = loadTexture(texPath.c_str());
+
+    unsigned VAOfloor;
+    unsigned VBOfloor;
+    glGenVertexArrays(1, &VAOfloor);
+    glGenBuffers(1, &VBOfloor);
+    glBindVertexArray(VAOfloor);
+    glBindBuffer(GL_ARRAY_BUFFER, VBOfloor);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(verticesFloor), verticesFloor, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
+
     shaderObject.use();
     shaderObject.setInt("material.diffuse",0);  // 设置漫反射材质id
     shaderObject.setInt("material.specular",1); // 设置高光反射材质id
@@ -221,6 +249,17 @@ int main()
             shaderObject.setMat3("normalMat", transpose(inverse(model)));
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
+
+        shaderObject.use();
+        mat4 model = mat4(1.0f);
+        shaderObject.setMat4("model", model);
+        shaderObject.setMat3("normalMat", transpose(inverse(model)));
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture_floor);
+
+        glBindVertexArray(VAOfloor);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         // 绘制灯
         shaderLight.use();

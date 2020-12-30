@@ -156,7 +156,7 @@ int main()
         // 1. render depth of scene to texture (from light's perspective)
         // --------------------------------------------------------------
         glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-        // glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
         glClear(GL_DEPTH_BUFFER_BIT);
 
         mat4 lightProjection, lightView;
@@ -169,23 +169,24 @@ int main()
         simpleDepthShader.use();
         mat4 view = camera.GetViewMatrix();
         mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        simpleDepthShader.setMat4("lightSpaceMatrix", projection*view);
+        // simpleDepthShader.setMat4("lightSpaceMatrix", projection*view);
+        simpleDepthShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
 
         renderScene(simpleDepthShader);
-        // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // // reset viewport
-        // glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // reset viewport
+        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // // render Depth map to quad for visual debugging
-        // // ---------------------------------------------
-        // debugDepthQuad.use();
-        // debugDepthQuad.setFloat("near_plane", near_plane);
-        // debugDepthQuad.setFloat("far_plane", far_plane);
-        // glActiveTexture(GL_TEXTURE0);
-        // glBindTexture(GL_TEXTURE_2D, depthMap);
-        // renderQuad();
+        // render Depth map to quad for visual debugging
+        // ---------------------------------------------
+        debugDepthQuad.use();
+        debugDepthQuad.setFloat("near_plane", near_plane);
+        debugDepthQuad.setFloat("far_plane", far_plane);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
+        renderQuad();
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -238,15 +239,15 @@ void renderFloor()
     {
         // set up vertex data (and buffer(s)) and configure vertex attributes
         // ------------------------------------------------------------------
-        float planeVertices[] = {
-              // positions            // normals         // texcoords
-         10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,  10.0f,  0.0f,
-        -10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
-        -10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,   0.0f, 10.0f,
+	    float planeVertices[] = {
+		// positions            // normals         // texcoords
+		 25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
+		-25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
+		-25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
 
-         10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,  10.0f,  0.0f,
-        -10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,   0.0f, 10.0f,
-         10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,  10.0f, 10.0f};
+		 25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
+		-25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
+		 25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,  25.0f, 10.0f};
 
         // plane VAO
         unsigned int planeVBO;

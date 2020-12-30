@@ -42,6 +42,8 @@ unsigned int cubeVAO = 0;
 unsigned int cubeVBO = 0;
 unsigned int quadVAO = 0;
 unsigned int quadVBO = 0;
+unsigned int woodTexture;
+unsigned int cubeTexture;
 
 int main()
 {
@@ -97,11 +99,12 @@ int main()
     // load textures
     // -------------
     string texPath = concatString(getcwd(NULL, 0), "/res/texture/wood.png");
-    unsigned int woodTexture = loadTexture(texPath.c_str());
-
+    woodTexture = loadTexture(texPath.c_str());
+    texPath = concatString(getcwd(NULL, 0), "/res/texture/box2.png");
+    cubeTexture = loadTexture(texPath.c_str());
     // configure depth map FBO
     // -----------------------
-    const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+    const unsigned int SHADOW_WIDTH = SCR_WIDTH, SHADOW_HEIGHT = SCR_HEIGHT;
     unsigned int depthMapFBO;
     glGenFramebuffers(1, &depthMapFBO);
     // create depth texture
@@ -124,6 +127,8 @@ int main()
     // --------------------
     debugDepthQuad.use();
     debugDepthQuad.setInt("depthMap", 0);
+    simpleDepthShader.use();
+    simpleDepthShader.setInt("tex", 0);
 
     // lighting info
     // -------------
@@ -150,6 +155,10 @@ int main()
 
         // 1. render depth of scene to texture (from light's perspective)
         // --------------------------------------------------------------
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        // glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glClear(GL_DEPTH_BUFFER_BIT);
+
         mat4 lightProjection, lightView;
         mat4 lightSpaceMatrix;
         float near_plane = 1.0f, far_plane = 7.5f;
@@ -158,28 +167,25 @@ int main()
         lightSpaceMatrix = lightProjection * lightView;
         // render scene from light's point of view
         simpleDepthShader.use();
-        simpleDepthShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+        mat4 view = camera.GetViewMatrix();
+        mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        simpleDepthShader.setMat4("lightSpaceMatrix", projection*view);
 
-        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, woodTexture);
         renderScene(simpleDepthShader);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // reset viewport
-        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // // reset viewport
+        // glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // render Depth map to quad for visual debugging
-        // ---------------------------------------------
-        debugDepthQuad.use();
-        debugDepthQuad.setFloat("near_plane", near_plane);
-        debugDepthQuad.setFloat("far_plane", far_plane);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, depthMap);
-        renderQuad();
+        // // render Depth map to quad for visual debugging
+        // // ---------------------------------------------
+        // debugDepthQuad.use();
+        // debugDepthQuad.setFloat("near_plane", near_plane);
+        // debugDepthQuad.setFloat("far_plane", far_plane);
+        // glActiveTexture(GL_TEXTURE0);
+        // glBindTexture(GL_TEXTURE_2D, depthMap);
+        // renderQuad();
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -226,19 +232,22 @@ void renderScene(const ShaderLoader &shader)
 
 void renderFloor()
 {
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, woodTexture);
     if (planeVAO == 0)
     {
         // set up vertex data (and buffer(s)) and configure vertex attributes
         // ------------------------------------------------------------------
         float planeVertices[] = {
-            // positions            // normals         // texcoords
-            25.0f, -0.5f, 25.0f, 0.0f, 1.0f, 0.0f, 25.0f, 0.0f,
-            -25.0f, -0.5f, 25.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-            -25.0f, -0.5f, -25.0f, 0.0f, 1.0f, 0.0f, 0.0f, 25.0f,
+              // positions            // normals         // texcoords
+         10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,  10.0f,  0.0f,
+        -10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
+        -10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,   0.0f, 10.0f,
 
-            25.0f, -0.5f, 25.0f, 0.0f, 1.0f, 0.0f, 25.0f, 0.0f,
-            -25.0f, -0.5f, -25.0f, 0.0f, 1.0f, 0.0f, 0.0f, 25.0f,
-            25.0f, -0.5f, -25.0f, 0.0f, 1.0f, 0.0f, 25.0f, 10.0f};
+         10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,  10.0f,  0.0f,
+        -10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,   0.0f, 10.0f,
+         10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,  10.0f, 10.0f};
+
         // plane VAO
         unsigned int planeVBO;
         glGenVertexArrays(1, &planeVAO);
@@ -262,6 +271,8 @@ void renderFloor()
 // -------------------------------------------------
 void renderCube()
 {
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, cubeTexture);
     // initialize (if necessary)
     if (cubeVAO == 0)
     {
@@ -337,29 +348,13 @@ void renderQuad()
 {
     if (quadVAO == 0)
     {
-        float quadVertices[] = {
-            // positions        // texture Coords
-            -1.0f,
-            1.0f,
-            0.0f,
-            0.0f,
-            1.0f,
-            -1.0f,
-            -1.0f,
-            0.0f,
-            0.0f,
-            0.0f,
-            1.0f,
-            1.0f,
-            0.0f,
-            1.0f,
-            1.0f,
-            1.0f,
-            -1.0f,
-            0.0f,
-            1.0f,
-            0.0f,
-        };
+	    float quadVertices[] = {
+			// positions        // texture Coords
+			-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+			-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+			 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+			 1.0f, -1.0f, 0.0f, 1.0f, 0.0f
+		};
         // setup plane VAO
         glGenVertexArrays(1, &quadVAO);
         glGenBuffers(1, &quadVBO);
@@ -381,16 +376,36 @@ void renderQuad()
 void processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    {
         glfwSetWindowShouldClose(window, true);
+    }
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    {
         camera.ProcessKeyboard(FORWARD, deltaTime);
+    }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
         camera.ProcessKeyboard(BACKWARD, deltaTime);
+    }
+    // 注意，我们对右向量进行了标准化。如果我们没对这个向量进行标准化，最后的叉乘结果会根据cameraFront变量返回大小不同的向量。
+    // 如果我们不对向量进行标准化，我们就得根据摄像机的朝向不同加速或减速移动了，但如果进行了标准化移动就是匀速的。
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
         camera.ProcessKeyboard(LEFT, deltaTime);
+    }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
         camera.ProcessKeyboard(RIGHT, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    {
+        camera.ProcessKeyboard(DOWN, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    {
+        camera.ProcessKeyboard(UP, deltaTime);
+    }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

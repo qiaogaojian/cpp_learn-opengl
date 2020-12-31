@@ -46,7 +46,7 @@ unsigned int quadVBO = 0;
 unsigned int woodTexture;
 unsigned int cubeTexture;
 
-vec3 lightPos(-2.0f, 4.0f, -1.0f);
+vec3 lightPos(0.0f, 1.0f, 0.0f);
 
 int main()
 {
@@ -227,17 +227,23 @@ void renderScene(const ShaderLoader &shader)
 
     // cubes
     model = mat4(1.0f);
-    model = translate(model, vec3(0.0f, 1.5f, 0.0));
+    model = translate(model, vec3(1.0f, 0.0f, 0.0f));
     model = scale(model, vec3(0.5f));
     shader.setMat4("model", model);
     renderCube();
     model = mat4(1.0f);
-    model = translate(model, vec3(2.0f, 0.0f, 1.0));
+    model = translate(model, vec3(-1.0f, 0.0f, 0.0f));
     model = scale(model, vec3(0.5f));
     shader.setMat4("model", model);
     renderCube();
     model = mat4(1.0f);
-    model = translate(model, vec3(-1.0f, 0.0f, 2.0));
+    model = translate(model, vec3(0.0f, 0.0f, 1.0f));
+    model = rotate(model, radians(60.0f), normalize(vec3(1.0, 0.0, 1.0)));
+    model = scale(model, vec3(0.25));
+    shader.setMat4("model", model);
+    renderCube();
+    model = mat4(1.0f);
+    model = translate(model, vec3(0.0f, 0.0f, -1.0f));
     model = rotate(model, radians(60.0f), normalize(vec3(1.0, 0.0, 1.0)));
     model = scale(model, vec3(0.25));
     shader.setMat4("model", model);

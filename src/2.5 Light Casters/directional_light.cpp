@@ -87,6 +87,12 @@ void processInput(GLFWwindow *window);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 unsigned int loadTexture(char const * path);
+void renderCube(ShaderLoader shaderObject);
+mat4 projection = mat4(1.0f);
+unsigned int VAO;
+unsigned int VBO;
+unsigned int texture_specular;
+unsigned int texture;
 
 int main()
 {
@@ -129,8 +135,6 @@ int main()
     // 设置顶点数据 配置顶点属性
     //--------------------------------------------------------------------------------------
     // 受光物体缓冲数据
-    unsigned int VAO;
-    unsigned int VBO;
     // 生成 VAO VBO
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -150,11 +154,11 @@ int main()
 
     // 第一个材质 漫反射贴图
     string texPath = shaderObject.concatString(getcwd(NULL, 0), "/res/texture/box2.png");
-    unsigned int texture = loadTexture(texPath.c_str());
+    texture = loadTexture(texPath.c_str());
 
     // 第二个材质 镜面反射贴图
     texPath = shaderObject.concatString(getcwd(NULL, 0), "/res/texture/box2_specular.png");
-    unsigned int texture_specular = loadTexture(texPath.c_str());
+    texture_specular = loadTexture(texPath.c_str());
 
     shaderObject.use();
     shaderObject.setInt("material.diffuse",0);
@@ -180,46 +184,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 使用状态
         glEnable(GL_DEPTH_TEST);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        // 别忘了激活第二个材质
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture_specular);
-
-        // 绘制物体
-        shaderObject.use();
-
-        vec3 lightColor = vec3(1.0f);
-        lightColor.x = sin(glfwGetTime() * 2.0f);
-        lightColor.y = sin(glfwGetTime() * 0.7f);
-        lightColor.z = sin(glfwGetTime() * 1.3f);
-        vec3 ambientColor = lightColor * 0.2f;
-        vec3 spotColor = vec3(0.5f, 0.5f, 0.5f);
-
-        // 材质设置(各个类型光照的颜色和反光度)
-        shaderObject.setFloat("material.shininess", 0.25f * 128);
-        // 光照设置(光照位置和光照强度)
-        shaderObject.setVec3("light.ambient", vec3(.3f));
-        shaderObject.setVec3("light.diffuse", vec3(1.0f));
-        shaderObject.setVec3("light.specular", vec3(1.0f));
-        shaderObject.setVec4("light.direction", -vec4(lightPos, 0.0f));
-
-        shaderObject.setVec3("viewPos", camera.Position);
-        mat4 projection = mat4(1.0f);
-        projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
-        shaderObject.setMat4("projection", projection);
-        shaderObject.setMat4("view", camera.GetViewMatrix());
-
-        glBindVertexArray(VAO);
-        for (int i = 0; i < 10; i++)
-        {
-            mat4 model = mat4(1.0f);
-            model = translate(model, cubePositions[i]);
-            model = rotate(model, radians(20.0f * i), glm::vec3(1.0f, 0.3f, 0.5f));
-            shaderObject.setMat4("model", model);
-            shaderObject.setMat3("normalMat", transpose(inverse(model)));
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
+        renderCube(shaderObject);
 
         // 绘制灯
         shaderLight.use();
@@ -248,6 +213,47 @@ int main()
     // 释放GLFW资源
     glfwTerminate(); // 当渲染循环结束后我们需要正确释放/删除之前的分配的所有资源 这样便能清理所有的资源并正确地退出应用程序
     return 0;
+}
+
+void renderCube(ShaderLoader shaderObject){
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        // 别忘了激活第二个材质
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture_specular);
+
+        shaderObject.use();
+
+        vec3 lightColor = vec3(1.0f);
+        lightColor.x = sin(glfwGetTime() * 2.0f);
+        lightColor.y = sin(glfwGetTime() * 0.7f);
+        lightColor.z = sin(glfwGetTime() * 1.3f);
+        vec3 ambientColor = lightColor * 0.2f;
+        vec3 spotColor = vec3(0.5f, 0.5f, 0.5f);
+
+        // 材质设置(各个类型光照的颜色和反光度)
+        shaderObject.setFloat("material.shininess", 0.25f * 128);
+        // 光照设置(光照位置和光照强度)
+        shaderObject.setVec3("light.ambient", vec3(1.0f));
+        shaderObject.setVec3("light.diffuse", vec3(1.0f));
+        shaderObject.setVec3("light.specular", vec3(1.0f));
+        shaderObject.setVec4("light.direction", -vec4(lightPos, 0.0f));
+
+        shaderObject.setVec3("viewPos", camera.Position);
+        projection = perspective(radians(camera.Zoom), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.0f);
+        shaderObject.setMat4("projection", projection);
+        shaderObject.setMat4("view", camera.GetViewMatrix());
+
+        glBindVertexArray(VAO);
+        for (int i = 0; i < 10; i++)
+        {
+            mat4 model = mat4(1.0f);
+            model = translate(model, cubePositions[i]);
+            model = rotate(model, radians(20.0f * i), glm::vec3(1.0f, 0.3f, 0.5f));
+            shaderObject.setMat4("model", model);
+            shaderObject.setMat3("normalMat", transpose(inverse(model)));
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 }
 
 // 窗口大小改变时 调整视口大小

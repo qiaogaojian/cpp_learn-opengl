@@ -254,12 +254,9 @@ int main()
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     ourShader.use();
-    ourShader.setInt("material.diffuse", 0);
-    ourShader.setInt("material.specular", 1);
     ourShader.setFloat("light.constant", 1.0f);
     ourShader.setFloat("light.linear", 0.09f);
     ourShader.setFloat("light.quadratic", 0.032f);
-    ourShader.setInt("skybox", 0);
 
     shaderCube.use();
     shaderCube.setInt("skybox", 0);
@@ -286,12 +283,12 @@ int main()
 
         // 设置 uniform 之前要先激活shader
         ourShader.use();
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        ourShader.setInt("texture_reflection1", 3);
+
         // 材质设置(各个类型光照的颜色和反光度)
         ourShader.setFloat("material.shininess", 0.25f * 128);
         // 光照设置(光照位置和光照强度)
-        ourShader.setVec3("light.ambient", vec3(.3f));
+        ourShader.setVec3("light.ambient", vec3(1.0f));
         ourShader.setVec3("light.diffuse", vec3(1.0f));
         ourShader.setVec3("light.specular", vec3(1.0f));
         ourShader.setVec4("light.vector", vec4(lightPos, 1.0f));
@@ -307,6 +304,9 @@ int main()
         ourShader.setMat3("normalMat", transpose(inverse(model)));
 
         ourModel.Draw(ourShader);
+        ourShader.setInt("skybox", ourModel.getTextureCount()); // 置于模型材质的末尾
+        glActiveTexture(GL_TEXTURE0 + ourModel.getTextureCount());
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 
         // 绘制灯
         shaderLight.use();

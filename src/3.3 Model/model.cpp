@@ -156,8 +156,6 @@ int main()
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     ourShader.use();
-    ourShader.setInt("material.diffuse", 0);
-    ourShader.setInt("material.specular", 1);
     ourShader.setFloat("light.constant", 1.0f);
     ourShader.setFloat("light.linear", 0.09f);
     ourShader.setFloat("light.quadratic", 0.032f);
@@ -180,9 +178,9 @@ int main()
         ourShader.use();
 
         // 材质设置(各个类型光照的颜色和反光度)
-        ourShader.setFloat("material.shininess", 0.25f * 128);
+        ourShader.setFloat("material.shininess", 0.25f * 32);
         // 光照设置(光照位置和光照强度)
-        ourShader.setVec3("light.ambient", vec3(.3f));
+        ourShader.setVec3("light.ambient", vec3(1.0f));
         ourShader.setVec3("light.diffuse", vec3(1.0f));
         ourShader.setVec3("light.specular", vec3(1.0f));
         ourShader.setVec4("light.vector", vec4(lightPos, 1.0f));

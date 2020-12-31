@@ -1,7 +1,5 @@
 #version 330 core
 struct Material {
-    sampler2D diffuse;   // 移除了环境光材质颜色向量，因为环境光颜色在几乎所有情况下都等于漫反射颜色，不需要将它们分开储存
-    sampler2D specular;
     float shininess;
 };
 
@@ -29,10 +27,13 @@ uniform vec3 viewPos;
 uniform Material material;
 uniform Light light;
 
+uniform sampler2D texture_diffuse1;
+uniform sampler2D texture_specular1;
+
 void main()
 {
     // 环境光
-    vec3 ambient=light.ambient * vec3(texture(material.diffuse, TexCoord));
+    vec3 ambient=light.ambient * vec3(texture(texture_diffuse1, TexCoord));
 
     // 漫反射
     vec3 normalDir=normalize(Normal);
@@ -47,13 +48,13 @@ void main()
     }
 
     float diff=max(dot(normalDir,lightDir),0);
-    vec3 diffuse=light.diffuse * diff * vec3(texture(material.diffuse, TexCoord));
+    vec3 diffuse=light.diffuse * diff * vec3(texture(texture_diffuse1, TexCoord));
 
     // 镜面反射
     vec3 viewDir=normalize(viewPos-FragPos);
     vec3 reflectDir=reflect(-lightDir,normalDir);// 反射函数第一个参数是入射光方向 第二个参数是法线方向
     float spec=pow(max(dot(viewDir,reflectDir),0),material.shininess);
-    vec3 specular=light.specular * spec * vec3(texture(material.specular,TexCoord));
+    vec3 specular=light.specular * spec * vec3(texture(texture_specular1,TexCoord));
 
     // 我们可以将环境光分量保持不变，让环境光照不会随着距离减少，但是如果我们使用多于一
     // 个的光源，所有的环境光分量将会开始叠加，所以在这种情况下我们也希望衰减环境光照。

@@ -12,6 +12,8 @@ int main()
     string cmd = "del \"" + buildPath + "\" /f/s/q/a";
     system(cmd.c_str());
 
+    cmd = "for /f \"delims=\" %a in ('dir /ad/b/s \"" + buildPath + "\"') do (rd /q /s \"%a\")>nul";
+    system(cmd.c_str());
     return 0;
 }
 

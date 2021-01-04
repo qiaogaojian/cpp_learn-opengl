@@ -32,8 +32,8 @@ void main()
     // 环境光
     vec3 ambient=light.ambient * vec3(texture(material.diffuse, fs_in.TexCoord));
 
-    // 漫反射
-    vec3 normalDir=normalize(texture(material.specular,fs_in.TexCoord).rgb);
+    // 漫反射 // 从 [-1,1] 转换至 [0,1] 法线向量的范围在-1到1之间，所以我们先要将其映射到0到1的范围
+    vec3 normalDir=normalize(texture(material.specular,fs_in.TexCoord).rgb * 2.0 - 1.0);
     vec3 lightDir=normalize(light.position - fs_in.FragPos);
     float diff=max(dot(normalDir,lightDir),0);
     vec3 diffuse=light.diffuse * diff * vec3(texture(material.diffuse, fs_in.TexCoord));

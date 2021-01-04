@@ -172,7 +172,7 @@ int main()
                 simpleDepthShader.setMat4(("shadowMatrices[" + to_string(i) + "]").c_str(),shadowTransforms[i]);
             }
             simpleDepthShader.setFloat("far_plane",far);
-            simpleDepthShader.setVec3("lightPos",lightPos);
+            simpleDepthShader.setVec3("lightPos", lightPos + vec3(sin(currentFrame),0,0));
             renderScene(simpleDepthShader);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -188,7 +188,7 @@ int main()
         shaderShadow.setMat4("projection", projection);
         shaderShadow.setMat4("view", view);
         shaderShadow.setVec3("viewPos", camera.Position);
-        shaderShadow.setVec3("lightPos", lightPos);
+        shaderShadow.setVec3("lightPos", lightPos + vec3(sin(currentFrame),0,0));
         shaderShadow.setFloat("far_plane",far);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_CUBE_MAP, depthMap);

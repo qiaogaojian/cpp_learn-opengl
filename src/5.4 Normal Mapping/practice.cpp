@@ -283,6 +283,7 @@ int main()
 
         // 设置 uniform 之前要先激活shader
         ourShader.use();
+        ourShader.setInt("texture_normal1", 2);
         ourShader.setInt("texture_reflection1", 3);
 
         // 材质设置(各个类型光照的颜色和反光度)

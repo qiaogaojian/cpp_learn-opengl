@@ -208,14 +208,14 @@ int main()
         shaderObject.setMat4("view", camera.GetViewMatrix());
 
         glBindVertexArray(VAO);
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 1; i++)
         {
             mat4 model = mat4(1.0f);
             model = translate(model, cubePositions[i]);
-            model = rotate(model, radians(20.0f * i), glm::vec3(1.0f, 0.3f, 0.5f));
+            // model = rotate(model, radians(20.0f * i), glm::vec3(1.0f, 0.3f, 0.5f));
             shaderObject.setMat4("model", model);
             shaderObject.setMat3("normalMat", transpose(inverse(model)));
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
         }
 
         // »æÖÆµÆ

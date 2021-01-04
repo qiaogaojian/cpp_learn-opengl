@@ -13,9 +13,13 @@ struct Light {
     vec3 specular;
 };
 
-in vec3 Normal;
-in vec3 FragPos;
-in vec2 TexCoord;
+in VS_OUT {
+    vec3 FragPos;
+    vec2 TexCoord;
+    vec3 TangentLightPos;
+    vec3 TangentViewPos;
+    vec3 TangentFragPos;
+} fs_in;
 
 out vec4 FragColor;
 
@@ -26,19 +30,19 @@ uniform Light light;
 void main()
 {
     // 环境光
-    vec3 ambient=light.ambient * vec3(texture(material.diffuse, TexCoord));
+    vec3 ambient=light.ambient * vec3(texture(material.diffuse, fs_in.TexCoord));
 
     // 漫反射
-    vec3 normalDir=normalize(Normal);
-    vec3 lightDir=normalize(light.position - FragPos);
+    vec3 normalDir=normalize(texture(material.specular,fs_in.TexCoord).rgb);
+    vec3 lightDir=normalize(light.position - fs_in.FragPos);
     float diff=max(dot(normalDir,lightDir),0);
-    vec3 diffuse=light.diffuse * diff * vec3(texture(material.diffuse, TexCoord));
+    vec3 diffuse=light.diffuse * diff * vec3(texture(material.diffuse, fs_in.TexCoord));
 
     // 镜面反射
-    vec3 viewDir=normalize(viewPos-FragPos);
-    vec3 reflectDir=reflect(-lightDir,normalDir);// 反射函数第一个参数是入射光方向 第二个参数是法线方向
-    float spec=pow(max(dot(viewDir,reflectDir),0),material.shininess);
-    vec3 specular=light.specular * spec * vec3(texture(material.specular,TexCoord));
+    vec3 viewDir=normalize(viewPos-fs_in.FragPos);         // 在观察空间计算镜面反射 观察坐标是原点不用计算
+    vec3 reflectDir=reflect(-lightDir,normalDir);      // 反射函数第一个参数是入射光方向 第二个参数是法线方向
+    float spec=pow(max(dot(viewDir,reflectDir),0),64);
+    vec3 specular=vec3(spec * texture(material.diffuse, fs_in.TexCoord).rgb);
 
     vec3 result=ambient+diffuse+specular;
     FragColor=vec4(result,1.);

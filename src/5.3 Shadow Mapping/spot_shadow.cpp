@@ -94,7 +94,7 @@ int main()
     // -------------------------
     char *vsPath = "/src/5.3 Shadow Mapping/spot_shadow_texture.vert";
     char *fsPath = "/src/5.3 Shadow Mapping/spot_shadow_texture.frag";
-    char *gsPath = "/src/5.3 Shadow Mapping/spot_shadow_texture.gs";
+    char *gsPath = "/src/5.3 Shadow Mapping/spot_shadow_texture.geom";
     ShaderLoader simpleDepthShader(vsPath, fsPath, gsPath);
     vsPath = "/src/5.3 Shadow Mapping/spot_shadow_light.vert";
     fsPath = "/src/5.3 Shadow Mapping/spot_shadow_light.frag";

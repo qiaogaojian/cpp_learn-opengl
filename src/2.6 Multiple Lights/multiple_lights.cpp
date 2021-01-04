@@ -133,7 +133,7 @@ int main()
 
     vsPath = "/src/4.9 Geometry Shader/visual_normal.vert";
     fsPath = "/src/4.9 Geometry Shader/visual_normal.frag";
-    char *gsPath = "/src/4.9 Geometry Shader/visual_normal.gs";
+    char *gsPath = "/src/4.9 Geometry Shader/visual_normal.geom";
     ShaderLoader normalShader(vsPath, fsPath, gsPath);
 
     // 设置顶点数据 配置顶点属性

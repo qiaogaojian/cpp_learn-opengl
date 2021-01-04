@@ -125,7 +125,7 @@ int main()
     ShaderLoader ourShader(vsPath, fsPath);
     vsPath = "/src/4.9 Geometry Shader/visual_normal.vert";
     fsPath = "/src/4.9 Geometry Shader/visual_normal.frag";
-    char *gsPath = "/src/4.9 Geometry Shader/visual_normal.gs";
+    char *gsPath = "/src/4.9 Geometry Shader/visual_normal.geom";
     ShaderLoader normalShader(vsPath, fsPath, gsPath);
 
     char *fsLightPath = "/src/2.3 Materials/light.frag";

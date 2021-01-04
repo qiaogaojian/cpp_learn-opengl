@@ -129,7 +129,7 @@ int main()
     //--------------------------------------------------------------------------------------
     char *vsPath = "/src/4.9 Geometry Shader/geometry_shader.vert";
     char *fsPath = "/src/4.9 Geometry Shader/geometry_shader.frag";
-    char *gsPath = "/src/4.9 Geometry Shader/geometry_shader.gs";
+    char *gsPath = "/src/4.9 Geometry Shader/geometry_shader.geom";
     ShaderLoader shaderLoader(vsPath, fsPath, gsPath);
 
     // ≈‰÷√ UBO(Uniform Buffer Object)

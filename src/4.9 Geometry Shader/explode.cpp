@@ -122,7 +122,7 @@ int main()
     //--------------------------------------------------------------------------------------
     char *vsPath = "/src/4.9 Geometry Shader/explode.vert";
     char *fsPath = "/src/4.9 Geometry Shader/explode.frag";
-    char *gsPath = "/src/4.9 Geometry Shader/explode.gs";
+    char *gsPath = "/src/4.9 Geometry Shader/explode.geom";
     ShaderLoader ourShader(vsPath, fsPath, gsPath);
     char *fsLightPath = "/src/2.3 Materials/light.frag";
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序

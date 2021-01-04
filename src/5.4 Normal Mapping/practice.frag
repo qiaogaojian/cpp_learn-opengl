@@ -36,7 +36,7 @@ uniform samplerCube skybox;
 void main()
 {
     vec3 I = normalize(FragPos - viewPos);
-    vec3 normal = normalize(Normal);
+    vec3 normal = texture(texture_normal1, TexCoord).rgb;
     vec3 R = reflect(I, normal);
     vec3 reflectMap = texture(texture_reflection1, TexCoord).rgb;
     vec3 reflection = vec3(texture(skybox, R).rgb) * reflectMap;

@@ -31,7 +31,7 @@ float ShadowCalculation(vec3 fragPos)
     // float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
 
     float shadow=0.;
-    float bias=.05;
+    float bias=.01;
     float offset=.01;
     for(float i=-offset;i<=offset;i+=offset)
     {

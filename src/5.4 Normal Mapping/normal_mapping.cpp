@@ -215,7 +215,7 @@ int main()
             // model = rotate(model, radians(20.0f * i), glm::vec3(1.0f, 0.3f, 0.5f));
             shaderObject.setMat4("model", model);
             shaderObject.setMat3("normalMat", transpose(inverse(model)));
-            glDrawArrays(GL_TRIANGLES, 0, 6);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
         // ªÊ÷∆µ∆

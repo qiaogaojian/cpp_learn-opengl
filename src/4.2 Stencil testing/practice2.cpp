@@ -120,12 +120,12 @@ int main()
 
     // 构建和编译 shader 程序
     //--------------------------------------------------------------------------------------
-    char *vsPath = "/src/4.2 Stencil testing/practice2.vs";
-    char *fsPath = "/src/4.2 Stencil testing/practice2.fs";
+    char *vsPath = "/src/4.2 Stencil testing/practice2.vert";
+    char *fsPath = "/src/4.2 Stencil testing/practice2.frag";
     ShaderLoader ourShader(vsPath, fsPath);
-    char *fsLightPath = "/src/2.3 Materials/light.fs";
+    char *fsLightPath = "/src/2.3 Materials/light.frag";
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序
-    char *fsSingleColorPath = "/src/4.2 Stencil testing/single_color.fs";
+    char *fsSingleColorPath = "/src/4.2 Stencil testing/single_color.frag";
     ShaderLoader shaderSingleColor(vsPath, fsSingleColorPath, nullptr);
 
     // 加载模型

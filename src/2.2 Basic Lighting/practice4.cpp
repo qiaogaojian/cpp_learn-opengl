@@ -117,8 +117,8 @@ int main()
 
     // 构建和编译 shader 程序
     //--------------------------------------------------------------------------------------
-    char *vsPath = "/src/2.2 Basic Lighting/practice4.vs";
-    char *fsPath = "/src/2.2 Basic Lighting/practice4.fs";
+    char *vsPath = "/src/2.2 Basic Lighting/practice4.vert";
+    char *fsPath = "/src/2.2 Basic Lighting/practice4.frag";
     char *fsLightPath = "/src/2.2 Basic Lighting/2.2.fs.lamp.glsl";
     ShaderLoader shaderObject(vsPath, fsPath, nullptr);     // 受光物体shader程序
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序

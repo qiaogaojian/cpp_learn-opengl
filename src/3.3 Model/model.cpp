@@ -120,10 +120,10 @@ int main()
 
     // 构建和编译 shader 程序
     //--------------------------------------------------------------------------------------
-    char *vsPath = "/src/3.3 Model/model.vs";
-    char *fsPath = "/src/3.3 Model/model.fs";
+    char *vsPath = "/src/3.3 Model/model.vert";
+    char *fsPath = "/src/3.3 Model/model.frag";
     ShaderLoader ourShader(vsPath, fsPath);
-    char *fsLightPath = "/src/2.3 Materials/light.fs";
+    char *fsLightPath = "/src/2.3 Materials/light.frag";
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序
 
     // 加载模型

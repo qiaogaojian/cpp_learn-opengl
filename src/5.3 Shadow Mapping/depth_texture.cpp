@@ -89,11 +89,11 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    char *vsPath = "/src/5.3 Shadow Mapping/depth_texture.vs";
-    char *fsPath = "/src/5.3 Shadow Mapping/depth_texture.fs";
+    char *vsPath = "/src/5.3 Shadow Mapping/depth_texture.vert";
+    char *fsPath = "/src/5.3 Shadow Mapping/depth_texture.frag";
     ShaderLoader simpleDepthShader(vsPath, fsPath, nullptr);
-    vsPath = "/src/5.3 Shadow Mapping/depth_debug.vs";
-    fsPath = "/src/5.3 Shadow Mapping/depth_debug.fs";
+    vsPath = "/src/5.3 Shadow Mapping/depth_debug.vert";
+    fsPath = "/src/5.3 Shadow Mapping/depth_debug.frag";
     ShaderLoader debugDepthQuad(vsPath, fsPath, nullptr);
 
     // load textures

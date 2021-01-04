@@ -123,14 +123,14 @@ int main()
 
     // 构建和编译 shader 程序
     //--------------------------------------------------------------------------------------
-    char *vsPath = "/src/4.6 Cubemaps/cubemaps.vs";
-    char *fsPath = "/src/4.6 Cubemaps/cubemaps.fs";
+    char *vsPath = "/src/4.6 Cubemaps/cubemaps.vert";
+    char *fsPath = "/src/4.6 Cubemaps/cubemaps.frag";
     ShaderLoader ourShader(vsPath, fsPath);
-    char *fsLightPath = "/src/2.3 Materials/light.fs";
+    char *fsLightPath = "/src/2.3 Materials/light.frag";
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序
 
-    char *vsCubePath = "/src/4.6 Cubemaps/cubemap.vs";
-    char *fsCubePath = "/src/4.6 Cubemaps/cubemap.fs";
+    char *vsCubePath = "/src/4.6 Cubemaps/cubemap.vert";
+    char *fsCubePath = "/src/4.6 Cubemaps/cubemap.frag";
     ShaderLoader shaderCube(vsCubePath, fsCubePath);
 
     float skyboxVertices[] = {

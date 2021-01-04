@@ -120,11 +120,11 @@ int main()
 
     // 构建和编译 shader 程序
     //--------------------------------------------------------------------------------------
-    char *vsPath = "/src/4.9 Geometry Shader/explode.vs";
-    char *fsPath = "/src/4.9 Geometry Shader/explode.fs";
+    char *vsPath = "/src/4.9 Geometry Shader/explode.vert";
+    char *fsPath = "/src/4.9 Geometry Shader/explode.frag";
     char *gsPath = "/src/4.9 Geometry Shader/explode.gs";
     ShaderLoader ourShader(vsPath, fsPath, gsPath);
-    char *fsLightPath = "/src/2.3 Materials/light.fs";
+    char *fsLightPath = "/src/2.3 Materials/light.frag";
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序
 
     // 加载模型

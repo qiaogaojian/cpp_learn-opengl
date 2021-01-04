@@ -92,15 +92,15 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    char *vsPath = "/src/5.3 Shadow Mapping/spot_shadow_texture.vs";
-    char *fsPath = "/src/5.3 Shadow Mapping/spot_shadow_texture.fs";
+    char *vsPath = "/src/5.3 Shadow Mapping/spot_shadow_texture.vert";
+    char *fsPath = "/src/5.3 Shadow Mapping/spot_shadow_texture.frag";
     char *gsPath = "/src/5.3 Shadow Mapping/spot_shadow_texture.gs";
     ShaderLoader simpleDepthShader(vsPath, fsPath, gsPath);
-    vsPath = "/src/5.3 Shadow Mapping/spot_shadow_light.vs";
-    fsPath = "/src/5.3 Shadow Mapping/spot_shadow_light.fs";
+    vsPath = "/src/5.3 Shadow Mapping/spot_shadow_light.vert";
+    fsPath = "/src/5.3 Shadow Mapping/spot_shadow_light.frag";
     ShaderLoader shaderShadow(vsPath, fsPath, nullptr);
-    vsPath = "/src/5.3 Shadow Mapping/depth_debug.vs";
-    fsPath = "/src/5.3 Shadow Mapping/depth_debug.fs";
+    vsPath = "/src/5.3 Shadow Mapping/depth_debug.vert";
+    fsPath = "/src/5.3 Shadow Mapping/depth_debug.frag";
     ShaderLoader debugDepthQuad(vsPath, fsPath, nullptr);
 
     // load textures

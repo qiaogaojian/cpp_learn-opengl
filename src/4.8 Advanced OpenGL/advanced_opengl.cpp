@@ -127,8 +127,8 @@ int main()
 
     // 构建和编译 shader 程序
     //--------------------------------------------------------------------------------------
-    char *vsPath = "/src/4.8 Advanced OpenGL/advanced_opengl.vs";
-    char *fsPath = "/src/4.8 Advanced OpenGL/advanced_opengl.fs";
+    char *vsPath = "/src/4.8 Advanced OpenGL/advanced_opengl.vert";
+    char *fsPath = "/src/4.8 Advanced OpenGL/advanced_opengl.frag";
     ShaderLoader shaderLoader(vsPath, fsPath, nullptr);
 
     // 配置 UBO(Uniform Buffer Object)

@@ -120,13 +120,13 @@ int main()
 
     // 构建和编译 shader 程序
     //--------------------------------------------------------------------------------------
-    char *vsPath = "/src/4.10 Instancing/planet.vs";
-    char *fsPath = "/src/4.10 Instancing/planet.fs";
+    char *vsPath = "/src/4.10 Instancing/planet.vert";
+    char *fsPath = "/src/4.10 Instancing/planet.frag";
     ShaderLoader ourShader(vsPath, fsPath);
-    char *fsLightPath = "/src/2.3 Materials/light.fs";
+    char *fsLightPath = "/src/2.3 Materials/light.frag";
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序
-    vsPath = "/src/4.10 Instancing/rock.vs";
-    fsPath = "/src/4.10 Instancing/rock.fs";
+    vsPath = "/src/4.10 Instancing/rock.vert";
+    fsPath = "/src/4.10 Instancing/rock.frag";
     ShaderLoader shaderRock(vsPath, fsPath);
 
     // 加载模型

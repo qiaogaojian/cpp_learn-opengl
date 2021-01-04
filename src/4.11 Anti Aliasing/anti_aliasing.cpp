@@ -118,8 +118,8 @@ int main()
 
     // 构建和编译 shader 程序
     //--------------------------------------------------------------------------------------
-    char *vsPath = "/src/4.11 Anti Aliasing/anti_aliasing.vs";
-    char *fsPath = "/src/4.11 Anti Aliasing/anti_aliasing.fs";
+    char *vsPath = "/src/4.11 Anti Aliasing/anti_aliasing.vert";
+    char *fsPath = "/src/4.11 Anti Aliasing/anti_aliasing.frag";
     char *fsLightPath = "/src/2.2 Basic Lighting/2.2.fs.lamp.glsl";
     ShaderLoader shaderObject(vsPath, fsPath, nullptr);     // 受光物体shader程序
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序
@@ -144,8 +144,8 @@ int main()
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    char *vsScreenPath = "/src/4.11 Anti Aliasing/anti_aliasing_screen.vs";
-    char *fsScreenPath = "/src/4.11 Anti Aliasing/anti_aliasing_screen.fs";
+    char *vsScreenPath = "/src/4.11 Anti Aliasing/anti_aliasing_screen.vert";
+    char *fsScreenPath = "/src/4.11 Anti Aliasing/anti_aliasing_screen.frag";
     ShaderLoader shaderScreen(vsScreenPath, fsScreenPath, nullptr);
 
     float quadVertices[] = {

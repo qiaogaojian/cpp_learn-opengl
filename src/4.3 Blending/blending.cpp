@@ -74,8 +74,8 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    char *vsPath = "/src/4.3 Blending/blending.vs";
-    char *fsPath = "/src/4.3 Blending/blending.fs";
+    char *vsPath = "/src/4.3 Blending/blending.vert";
+    char *fsPath = "/src/4.3 Blending/blending.frag";
     ShaderLoader shader(vsPath, fsPath, nullptr);
 
     // set up vertex data (and buffer(s)) and configure vertex attributes

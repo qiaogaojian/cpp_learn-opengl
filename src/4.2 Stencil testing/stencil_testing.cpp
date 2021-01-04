@@ -73,9 +73,9 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    char *vsPath = "/src/4.2 Stencil testing/stencil_testing.vs";
-    char *fsPath = "/src/4.2 Stencil testing/stencil_testing.fs";
-    char *singleColorFsPath = "/src/4.2 Stencil testing/single_color.fs";
+    char *vsPath = "/src/4.2 Stencil testing/stencil_testing.vert";
+    char *fsPath = "/src/4.2 Stencil testing/stencil_testing.frag";
+    char *singleColorFsPath = "/src/4.2 Stencil testing/single_color.frag";
     ShaderLoader shader(vsPath, fsPath, nullptr);
     ShaderLoader sigleColorShader(vsPath, singleColorFsPath, nullptr);
 

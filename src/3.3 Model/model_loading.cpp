@@ -80,8 +80,8 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    char *vsPath = "/src/3.3 Model/model_loading.vs";
-    char *fsPath = "/src/3.3 Model/model_loading.fs";
+    char *vsPath = "/src/3.3 Model/model_loading.vert";
+    char *fsPath = "/src/3.3 Model/model_loading.frag";
     ShaderLoader ourShader(vsPath, fsPath);
 
     // load models

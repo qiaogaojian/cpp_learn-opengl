@@ -73,12 +73,12 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    char *vsPath = "/src/4.5 Framebuffers/framebuffers.vs";
-    char *fsPath = "/src/4.5 Framebuffers/framebuffers.fs";
+    char *vsPath = "/src/4.5 Framebuffers/framebuffers.vert";
+    char *fsPath = "/src/4.5 Framebuffers/framebuffers.frag";
     ShaderLoader shader(vsPath, fsPath, nullptr);
 
-    char *vsScreenPath = "/src/4.5 Framebuffers/framebuffers_screen.vs";
-    char *fsScreenPath = "/src/4.5 Framebuffers/framebuffers_screen.fs";
+    char *vsScreenPath = "/src/4.5 Framebuffers/framebuffers_screen.vert";
+    char *fsScreenPath = "/src/4.5 Framebuffers/framebuffers_screen.frag";
     ShaderLoader shaderScreen(vsScreenPath, fsScreenPath, nullptr);
 
     // set up vertex data (and buffer(s)) and configure vertex attributes

@@ -73,8 +73,8 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    char *vsPath = "/src/4.1 Depth Testing/depth_testing.vs";
-    char *fsPath = "/src/4.1 Depth Testing/depth_testing.fs";
+    char *vsPath = "/src/4.1 Depth Testing/depth_testing.vert";
+    char *fsPath = "/src/4.1 Depth Testing/depth_testing.frag";
     ShaderLoader shader(vsPath, fsPath, nullptr);
 
     // set up vertex data (and buffer(s)) and configure vertex attributes

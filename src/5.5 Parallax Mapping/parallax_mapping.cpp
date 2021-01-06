@@ -153,7 +153,7 @@ int main()
     string texPath = shaderObject.concatString(getcwd(NULL, 0), "/res/texture/bricks2.jpg");
     unsigned int texture = loadTexture(texPath.c_str());
 
-    // 第二个材质 镜面反射贴图
+    // 第二个材质 法线贴图
     texPath = shaderObject.concatString(getcwd(NULL, 0), "/res/texture/bricks2_normal.jpg");
     unsigned int texture_specular = loadTexture(texPath.c_str());
 

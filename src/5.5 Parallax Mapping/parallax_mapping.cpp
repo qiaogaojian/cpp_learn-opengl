@@ -203,7 +203,8 @@ int main()
         vec3 spotColor = vec3(0.5f, 0.5f, 0.5f);
 
         // 材质设置(各个类型光照的颜色和反光度)
-        shaderObject.setFloat("material.shininess", 32);
+        shaderObject.setFloat("material.shininess", 128);
+        shaderObject.setFloat("heightScale", 0.1f);
         // 光照设置(光照位置和光照强度)
         shaderObject.setVec3("light.ambient", vec3(.3f));
         shaderObject.setVec3("light.diffuse", vec3(1.0f));

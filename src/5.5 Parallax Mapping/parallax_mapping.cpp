@@ -155,11 +155,16 @@ int main()
 
     // 第二个材质 法线贴图
     texPath = shaderObject.concatString(getcwd(NULL, 0), "/res/texture/bricks2_normal.jpg");
-    unsigned int texture_specular = loadTexture(texPath.c_str());
+    unsigned int texture_normal = loadTexture(texPath.c_str());
+
+    // 第三个材质 高度贴图
+    texPath = shaderObject.concatString(getcwd(NULL, 0), "/res/texture/bricks2_disp.jpg");
+    unsigned int texture_height = loadTexture(texPath.c_str());
 
     shaderObject.use();
-    shaderObject.setInt("material.diffuse",0);
-    shaderObject.setInt("material.specular",1);
+    shaderObject.setInt("diffuseMap",0);
+    shaderObject.setInt("normalMap",1);
+    shaderObject.setInt("heightMap",2);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // 隐藏鼠标
     glfwSetCursorPosCallback(window, mouse_callback);
@@ -182,7 +187,10 @@ int main()
         glBindTexture(GL_TEXTURE_2D, texture);
         // 别忘了激活第二个材质
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture_specular);
+        glBindTexture(GL_TEXTURE_2D, texture_normal);
+
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, texture_height);
 
         // 绘制物体
         shaderObject.use();
@@ -195,7 +203,7 @@ int main()
         vec3 spotColor = vec3(0.5f, 0.5f, 0.5f);
 
         // 材质设置(各个类型光照的颜色和反光度)
-        shaderObject.setFloat("material.shininess", 0.25f * 128);
+        shaderObject.setFloat("material.shininess", 32);
         // 光照设置(光照位置和光照强度)
         shaderObject.setVec3("light.ambient", vec3(.3f));
         shaderObject.setVec3("light.diffuse", vec3(1.0f));
@@ -209,7 +217,7 @@ int main()
         shaderObject.setMat4("view", camera.GetViewMatrix());
         mat4 model = mat4(1.0f);
         model = translate(model, cubePositions[0]);
-        model = rotate(model,sin(time), vec3(0,1.0f,0));
+        model = rotate(model,sin(time/3.0f), vec3(0,1.0f,0));
         shaderObject.setMat4("model", model);
         renderQuad();
 

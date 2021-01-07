@@ -119,7 +119,7 @@ int main()
     //--------------------------------------------------------------------------------------
     char *vsPath = "/src/2.2 Basic Lighting/2.2.vs.glsl.vert";
     char *fsPath = "/src/2.2 Basic Lighting/2.2.fs.glsl.frag";
-    char *fsLightPath = "/src/2.2 Basic Lighting/2.2.fs.lamp.glsl";
+    char *fsLightPath = "/src/2.2 Basic Lighting/2.2.fs.lamp.glsl.frag";
     ShaderLoader shaderObject(vsPath, fsPath, nullptr);     // 受光物体shader程序
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序
 
@@ -164,7 +164,7 @@ int main()
     shaderObject.setVec3("lightColor", vec3(1.0f, 1.0f, 1.0f));
     shaderObject.setVec3("lightPos",lightPos);
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // 隐藏鼠标
+    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // 隐藏鼠标
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
 

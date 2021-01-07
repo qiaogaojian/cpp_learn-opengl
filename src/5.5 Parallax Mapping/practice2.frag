@@ -43,7 +43,16 @@ vec2 calTexOffCoor(vec2 trueTexCoord, vec3 viewDir){
         curDepthMapValue = texture(heightMap, trueTexCoord).r;
         curLayerDepth += layerDepth;
     }
-    return trueTexCoord;
+
+    vec2 preTexCoords = trueTexCoord + deltaTexCoords;
+
+    float afterDepth = curDepthMapValue - curLayerDepth;
+    float beforeDepth = texture(heightMap, preTexCoords).r - curLayerDepth + layerDepth;
+
+    float weight = afterDepth / (afterDepth - beforeDepth);
+    vec2 finalTexCoord = preTexCoords * weight + trueTexCoord * (1.0 - weight);
+
+    return finalTexCoord;
 }
 
 void main()

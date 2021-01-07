@@ -218,7 +218,7 @@ int main()
         shaderObject.setMat4("view", camera.GetViewMatrix());
         mat4 model = mat4(1.0f);
         model = translate(model, cubePositions[0]);
-        model = rotate(model,sin(time/3.0f), vec3(0,1.0f,0));
+        // model = rotate(model,sin(time/3.0f), vec3(0,1.0f,0));
         shaderObject.setMat4("model", model);
         renderQuad();
 

@@ -153,6 +153,10 @@ int main()
     // 开关绘制线框
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 
     char *vsPath = "/src/7.2 Text Rendering/text_rendering.vert";
     char *fsPath = "/src/7.2 Text Rendering/text_rendering.frag";
@@ -168,6 +172,7 @@ int main()
     if (FT_New_Face(ft, facePath.c_str(), 0, &face))
     {
         std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+        return -1;
     }
     FT_Set_Pixel_Sizes(face, 0, 48);
 
@@ -200,11 +205,10 @@ int main()
     FT_Done_Face(face);
     FT_Done_FreeType(ft);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    mat4 projection = ortho(0, 800, 0, 600);
-
+    // mat4 projection = ortho(0.0f, 800.0f, 0.0f, 600.0f);
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(SCR_WIDTH), 0.0f, static_cast<float>(SCR_HEIGHT));
+    shader.use();
+    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
     glGenVertexArrays(1, &textVAO);
     glGenBuffers(1, &textVBO);
@@ -230,8 +234,7 @@ int main()
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0);
 
-        // RenderText(shader,"Hello Triangle",400,300,1,toFloatColor("FFFFFF"));
-        RenderText(shader, "(C) LearnOpenGL.com", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
+        RenderText(shader,"Hello Triangle",10,550,1,toFloatColor("FFFFFF"));
         // 检查并调用事件，交换缓冲完成绘制
         glfwPollEvents();        // 检查有没有触发什么事件（比如键盘输入、鼠标移动等）、更新窗口状态，并调用对应的回调函数（可以通过回调方法手动设置）
         glfwSwapBuffers(window); // 双缓冲交换颜色缓冲（它是一个储存着GLFW窗口每一个像素颜色值的大缓冲），它在这一迭代中被用来绘制，并且将会作为输出显示在屏幕上

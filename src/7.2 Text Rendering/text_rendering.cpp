@@ -2,6 +2,9 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
+#include "ft2build.h"
+#include FT_FREETYPE_H
+
 using namespace std;
 
 const unsigned int SCR_WIDTH = 800;  // 屏幕宽度
@@ -132,6 +135,18 @@ int main()
     glBindVertexArray(0);
     // 开关绘制线框
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+
+    FT_Library ft;
+    if (FT_Init_FreeType(&ft))
+    {
+        cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+    }
+    FT_Face face;
+    if (FT_New_Face(ft, "res/font/msyh.ttf", 0, &face))
+    {
+        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+    }
 
     while (!glfwWindowShouldClose(window))
     {

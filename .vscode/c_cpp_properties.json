@@ -4,8 +4,8 @@
       "name": "Win32",
       "includePath": [
         "${workspaceFolder}/**",
-        "${workspaceFolder}/include",
         "${workspaceFolder}/include/utils",
+        "${workspaceFolder}/include",
         "${workspaceFolder}/include/glm/glm",
         "${workspaceFolder}/include/glad/include",
         "${workspaceFolder}/include/glfw/include",
@@ -17,8 +17,8 @@
       "browse": {
         "path": [
             "${workspaceFolder}/**",
-            "${workspaceFolder}/include",
             "${workspaceFolder}/include/utils",
+            "${workspaceFolder}/include",
             "${workspaceFolder}/include/glm/glm",
             "${workspaceFolder}/include/glad/include",
             "${workspaceFolder}/include/glfw/include",

@@ -58,8 +58,8 @@ int main()
 
     // 构建和编译 shader 程序
     //--------------------------------------------------------------------------------------
-    char *vsPath = "/src/4.7 Advanced Data/advanced_data.vs";
-    char *fsPath = "/src/4.7 Advanced Data/advanced_data.fs";
+    char *vsPath = "/src/4.7 Advanced Data/advanced_data.vert";
+    char *fsPath = "/src/4.7 Advanced Data/advanced_data.frag";
     ShaderLoader shaderLoader(vsPath, fsPath, nullptr);
 
     // 设置顶点数据 配置顶点属性

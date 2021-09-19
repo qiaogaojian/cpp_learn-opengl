@@ -5,6 +5,7 @@
       "includePath": [
         "${workspaceFolder}/**",
         "${workspaceFolder}/include/utils",
+        "${workspaceFolder}/include",
         "${workspaceFolder}/include/glm/glm",
         "${workspaceFolder}/include/glad/include",
         "${workspaceFolder}/include/glfw/include",
@@ -17,6 +18,7 @@
         "path": [
             "${workspaceFolder}/**",
             "${workspaceFolder}/include/utils",
+            "${workspaceFolder}/include",
             "${workspaceFolder}/include/glm/glm",
             "${workspaceFolder}/include/glad/include",
             "${workspaceFolder}/include/glfw/include",

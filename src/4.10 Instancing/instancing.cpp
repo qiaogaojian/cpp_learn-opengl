@@ -55,8 +55,8 @@ int main()
 
     // 构建和编译 shader 程序
     //--------------------------------------------------------------------------------------
-    char *vsPath = "/src/4.10 Instancing/instancing.vs";
-    char *fsPath = "/src/4.10 Instancing/instancing.fs";
+    char *vsPath = "/src/4.10 Instancing/instancing.vert";
+    char *fsPath = "/src/4.10 Instancing/instancing.frag";
     ShaderLoader shaderLoader(vsPath, fsPath, nullptr);
 
     // 设置顶点数据 配置顶点属性

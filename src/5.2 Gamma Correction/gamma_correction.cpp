@@ -77,8 +77,8 @@ int main()
 
     // 构建和编译 shader 程序
     //--------------------------------------------------------------------------------------
-    char *vsPath = "/src/5.2 Gamma Correction/gamma_correction.vs";
-    char *fsPath = "/src/5.2 Gamma Correction/gamma_correction.fs";
+    char *vsPath = "/src/5.2 Gamma Correction/gamma_correction.vert";
+    char *fsPath = "/src/5.2 Gamma Correction/gamma_correction.frag";
     char *fsLightPath = "/src/2.2 Basic Lighting/2.2.fs.lamp.glsl";
     ShaderLoader shaderObject(vsPath, fsPath, nullptr);     // 受光物体shader程序
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序

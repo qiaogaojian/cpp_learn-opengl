@@ -14,8 +14,8 @@ using namespace glm;
 
 string concatString(char *s1, const char *s2);
 string subreplace(string resource_str, string sub_str, string new_str);
-unsigned int loadTexture(char const * path);
-unsigned int loadTexture(char const * path, bool gammaCorrection);
+unsigned int loadTexture(char const *path);
+unsigned int loadTexture(char const *path, bool gammaCorrection);
 
 // concat string
 string concatString(char *s1, const char *s2)
@@ -35,7 +35,7 @@ string subreplace(string resource_str, string sub_str, string new_str)
 }
 
 // 从路径加载材质 返回材质ID
-unsigned int loadTexture(char const * path)
+unsigned int loadTexture(char const *path)
 {
     unsigned int textureID;
     glGenTextures(1, &textureID);
@@ -72,7 +72,7 @@ unsigned int loadTexture(char const * path)
     return textureID;
 }
 
-unsigned int loadTexture(char const * path, bool gammaCorrection)
+unsigned int loadTexture(char const *path, bool gammaCorrection)
 {
     unsigned int textureID;
     glGenTextures(1, &textureID);
@@ -116,5 +116,12 @@ unsigned int loadTexture(char const * path, bool gammaCorrection)
     }
 
     return textureID;
+}
+
+vec3 toFloatColor(char *hexColor)
+{
+    int r, g, b;
+    sscanf(hexColor, "%02x%02x%02x", &r, &g, &b);
+    return vec3(r / 255.0f, g / 255.0f, b / 255.0f);
 }
 #endif

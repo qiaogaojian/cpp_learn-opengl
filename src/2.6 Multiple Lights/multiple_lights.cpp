@@ -125,15 +125,15 @@ int main()
 
     // 构建和编译 shader 程序
     //--------------------------------------------------------------------------------------
-    char *vsPath = "/src/2.6 Multiple Lights/multiple_lights.vs";
-    char *fsPath = "/src/2.6 Multiple Lights/multiple_lights.fs";
-    char *fsLightPath = "/src/2.3 Materials/light.fs";
+    char *vsPath = "/src/2.6 Multiple Lights/multiple_lights.vert";
+    char *fsPath = "/src/2.6 Multiple Lights/multiple_lights.frag";
+    char *fsLightPath = "/src/2.3 Materials/light.frag";
     ShaderLoader shaderObject(vsPath, fsPath, nullptr);     // 受光物体shader程序
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序
 
-    vsPath = "/src/4.9 Geometry Shader/visual_normal.vs";
-    fsPath = "/src/4.9 Geometry Shader/visual_normal.fs";
-    char *gsPath = "/src/4.9 Geometry Shader/visual_normal.gs";
+    vsPath = "/src/4.9 Geometry Shader/visual_normal.vert";
+    fsPath = "/src/4.9 Geometry Shader/visual_normal.frag";
+    char *gsPath = "/src/4.9 Geometry Shader/visual_normal.geom";
     ShaderLoader normalShader(vsPath, fsPath, gsPath);
 
     // 设置顶点数据 配置顶点属性

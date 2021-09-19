@@ -111,8 +111,8 @@ int main()
 
     // 构建和编译 shader 程序
     //--------------------------------------------------------------------------------------
-    char *vsPath = "/src/1.5 Coordinate Systems/1.5.vs.glsl";
-    char *fsPath = "/src/1.5 Coordinate Systems/1.5.fs.glsl";
+    char *vsPath = "/src/1.5 Coordinate Systems/1.5.vs.glsl.vert";
+    char *fsPath = "/src/1.5 Coordinate Systems/1.5.fs.glsl.frag";
     ShaderLoader shaderLoader(vsPath, fsPath, nullptr);
 
     // 设置顶点数据 配置顶点属性

@@ -92,15 +92,15 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    char *vsPath = "/src/5.3 Shadow Mapping/spot_shadow_texture.vs";
-    char *fsPath = "/src/5.3 Shadow Mapping/spot_shadow_texture.fs";
-    char *gsPath = "/src/5.3 Shadow Mapping/spot_shadow_texture.gs";
+    char *vsPath = "/src/5.3 Shadow Mapping/spot_shadow_texture.vert";
+    char *fsPath = "/src/5.3 Shadow Mapping/spot_shadow_texture.frag";
+    char *gsPath = "/src/5.3 Shadow Mapping/spot_shadow_texture.geom";
     ShaderLoader simpleDepthShader(vsPath, fsPath, gsPath);
-    vsPath = "/src/5.3 Shadow Mapping/spot_shadow_light.vs";
-    fsPath = "/src/5.3 Shadow Mapping/spot_shadow_light.fs";
+    vsPath = "/src/5.3 Shadow Mapping/spot_shadow_light.vert";
+    fsPath = "/src/5.3 Shadow Mapping/spot_shadow_light.frag";
     ShaderLoader shaderShadow(vsPath, fsPath, nullptr);
-    vsPath = "/src/5.3 Shadow Mapping/depth_debug.vs";
-    fsPath = "/src/5.3 Shadow Mapping/depth_debug.fs";
+    vsPath = "/src/5.3 Shadow Mapping/depth_debug.vert";
+    fsPath = "/src/5.3 Shadow Mapping/depth_debug.frag";
     ShaderLoader debugDepthQuad(vsPath, fsPath, nullptr);
 
     // load textures
@@ -109,18 +109,16 @@ int main()
     woodTexture = loadTexture(texPath.c_str());
     texPath = concatString(getcwd(NULL, 0), "/res/texture/wood.png");
     cubeTexture = loadTexture(texPath.c_str());
-    // configure depth map FBO
+    // 点阴影配置
     // -----------------------
     const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024; // 要确保阴影深度贴图的宽高相等
-    unsigned int depthMapFBO;
-    glGenFramebuffers(1, &depthMapFBO);
-    // create depth texture
+    // 生成cubemap
     unsigned int depthMap = genCubemap(SHADOW_WIDTH, SHADOW_HEIGHT);
 
     float near = 1.0f;
     float far = 25.0f;
     mat4 shadowProj = perspective(radians(90.0f),(float)SHADOW_WIDTH / (float)SHADOW_HEIGHT,near,far);
-    vector<mat4> shadowTransforms;
+    vector<mat4> shadowTransforms;  // cubemap的六个方向
     shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)));
     shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)));
     shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)));
@@ -128,14 +126,16 @@ int main()
     shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)));
     shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f)));
 
-    // attach depth texture as FBO's depth buffer
+    // 生成FBO 绑定cubemap
+    unsigned int depthMapFBO;
+    glGenFramebuffers(1, &depthMapFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
     glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthMap, 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    // shader configuration
+    // 设置cubemap
     // --------------------
     shaderShadow.use();
     shaderShadow.setInt("diffuseTexture", 0);
@@ -160,27 +160,27 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // 1. render depth of scene to texture (from light's perspective)
+        // 渲染深度贴图
         // --------------------------------------------------------------
         glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
         glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-            glClear(GL_DEPTH_BUFFER_BIT);
-        // render scene from light's point of view
+        glClear(GL_DEPTH_BUFFER_BIT);
+            // 从灯光的视角渲染深度
             simpleDepthShader.use();
             for (unsigned int i = 0; i < 6; i++)
             {
                 simpleDepthShader.setMat4(("shadowMatrices[" + to_string(i) + "]").c_str(),shadowTransforms[i]);
             }
             simpleDepthShader.setFloat("far_plane",far);
-            simpleDepthShader.setVec3("lightPos",lightPos);
+            simpleDepthShader.setVec3("lightPos", lightPos + vec3(0,sin(currentFrame),0));
             renderScene(simpleDepthShader);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // reset viewport
+        // 恢复视角
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // render Depth map to quad for visual debugging
+        // 渲染真正的物体和阴影
         // ---------------------------------------------
         shaderShadow.use();
         mat4 view = camera.GetViewMatrix();
@@ -188,7 +188,7 @@ int main()
         shaderShadow.setMat4("projection", projection);
         shaderShadow.setMat4("view", view);
         shaderShadow.setVec3("viewPos", camera.Position);
-        shaderShadow.setVec3("lightPos", lightPos);
+        shaderShadow.setVec3("lightPos", lightPos + vec3(0,sin(currentFrame),0));
         shaderShadow.setFloat("far_plane",far);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_CUBE_MAP, depthMap);

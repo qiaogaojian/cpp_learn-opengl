@@ -1,6 +1,3 @@
-#share #opengl #开发环境 #cpp #mscv #vscode
-
-> 原文地址 [github.com](https://github.com/qiaogaojian/cpp_learn-opengl)
 
 因为 windows 环境下使用 g++ 编译器 assimp 库链接失败, 报错 "undefined reference to'Assimp::Importer::Importer()", 后来发现使用 MSVC 编译器没有这个问题, 踩了几个坑终于搭建成功, 在此记录一下基于VSCode + MSVC编译器的 OpenGL 开发环境配置.
 

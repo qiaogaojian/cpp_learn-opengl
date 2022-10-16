@@ -212,3 +212,5 @@
 2. 确保使用vsdevcmd进行编译
 
 3. 遇到 "undefined reference to xxx", 先检查 tasks.json 链接缺失的库, 再检查环境变量
+
+4. 编译时需要引用build文件夹, 但是build文件夹git已忽略, 因此需要自己提前新建好

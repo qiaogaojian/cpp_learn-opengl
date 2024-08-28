@@ -1,29 +1,29 @@
 
-ÒòÎª windows »·¾³ÏÂÊ¹ÓÃ g++ ±àÒëÆ÷ assimp ¿âÁ´½ÓÊ§°Ü, ±¨´í "undefined reference to'Assimp::Importer::Importer()", ºóÀ´·¢ÏÖÊ¹ÓÃ MSVC ±àÒëÆ÷Ã»ÓĞÕâ¸öÎÊÌâ, ²ÈÁË¼¸¸ö¿ÓÖÕÓÚ´î½¨³É¹¦, ÔÚ´Ë¼ÇÂ¼Ò»ÏÂ»ùÓÚVSCode + MSVC±àÒëÆ÷µÄ OpenGL ¿ª·¢»·¾³ÅäÖÃ.
+å› ä¸º windows ç¯å¢ƒä¸‹ä½¿ç”¨ g++ ç¼–è¯‘å™¨ assimp åº“é“¾æ¥å¤±è´¥, æŠ¥é”™ "undefined reference to'Assimp::Importer::Importer()", åæ¥å‘ç°ä½¿ç”¨ MSVC ç¼–è¯‘å™¨æ²¡æœ‰è¿™ä¸ªé—®é¢˜, è¸©äº†å‡ ä¸ªå‘ç»ˆäºæ­å»ºæˆåŠŸ, åœ¨æ­¤è®°å½•ä¸€ä¸‹åŸºäºVSCode + MSVCç¼–è¯‘å™¨çš„ OpenGL å¼€å‘ç¯å¢ƒé…ç½®.
 
-ÁíÍâ, mingw/g++ ¿ª·¢»·¾³ÔÚ g++ ·ÖÖ§ 
-visual studio ¿ª·¢»·¾³ÔÚ vs2019 ·ÖÖ§.
+å¦å¤–, mingw/g++ å¼€å‘ç¯å¢ƒåœ¨ g++ åˆ†æ”¯ 
+visual studio å¼€å‘ç¯å¢ƒåœ¨ vs2019 åˆ†æ”¯.
 
-### 1. °²×°ËùĞèÈí¼ş
+### 1. å®‰è£…æ‰€éœ€è½¯ä»¶
 
-*   VSCode °²×° C++ extension
+*   VSCode å®‰è£… C++ extension
 
-*   ÏÂÔØ°²×° [assimp-sdk-3.3.1-setup_vs2017.exe](https://github.com/assimp/assimp/releases/tag/v3.3.1/)
+*   ä¸‹è½½å®‰è£… [assimp-sdk-3.3.1-setup_vs2017.exe](https://github.com/assimp/assimp/releases/tag/v3.3.1/)
     
-*   °²×°´ø C++ build tools µÄ Visual Studio, ÏÂÔØ¶ÀÁ¢µÄ [C++ build tools](https://visualstudio.microsoft.com/zh-hant/visual-cpp-build-tools/) Ò²¿ÉÒÔ.
+*   å®‰è£…å¸¦ C++ build tools çš„ Visual Studio, ä¸‹è½½ç‹¬ç«‹çš„ [C++ build tools](https://visualstudio.microsoft.com/zh-hant/visual-cpp-build-tools/) ä¹Ÿå¯ä»¥.
     
-*   ÆäËûËùÓÃµÄ¿âÔÚ[ÏîÄ¿](https://github.com/qiaogaojian/learn-opengl.git)ÖĞµÄ include ÎÄ¼ş¼ĞÀï
+*   å…¶ä»–æ‰€ç”¨çš„åº“åœ¨[é¡¹ç›®](https://github.com/qiaogaojian/learn-opengl.git)ä¸­çš„ include æ–‡ä»¶å¤¹é‡Œ
     
 
-### 2. ÅäÖÃ»·¾³±äÁ¿
+### 2. é…ç½®ç¯å¢ƒå˜é‡
 
-*   Path ÖĞÌí¼Ó assimp ¿â
+*   Path ä¸­æ·»åŠ  assimp åº“
     
 ```sh
-D:\Opengl\Assimp\bin\x86  # ÕâÑù¾Í²»ĞèÒª°Ñassimp.dll·Åµ½buildÄ¿Â¼ÁË
+D:\Opengl\Assimp\bin\x86  # è¿™æ ·å°±ä¸éœ€è¦æŠŠassimp.dllæ”¾åˆ°buildç›®å½•äº†
 ```
     
-*   ĞÂ½¨ INCLUDE »·¾³±äÁ¿, Ìí¼ÓÒÔÏÂÄ¿Â¼
+*   æ–°å»º INCLUDE ç¯å¢ƒå˜é‡, æ·»åŠ ä»¥ä¸‹ç›®å½•
     
 ```sh
 D:\Program\VS2019\VS\VC\Tools\MSVC\14.28.29333\include
@@ -36,7 +36,7 @@ D:\Windows Kits\10\Include\10.0.19041.0\winrt
 D:\Windows Kits\10\Include\10.0.19041.0\cppwinrt
 ```
     
-*   ĞÂ½¨ LIB »·¾³±äÁ¿, Ìí¼ÓÒÔÏÂÄ¿Â¼
+*   æ–°å»º LIB ç¯å¢ƒå˜é‡, æ·»åŠ ä»¥ä¸‹ç›®å½•
     
 ```sh
 D:\Program\VS2019\VS\VC\Tools\MSVC\14.28.29333\lib\x86
@@ -48,9 +48,9 @@ D:\Windows Kits\10\lib\10.0.19041.0\um\x86
 ```
     
 
-### 3. ÅäÖÃ vscode
+### 3. é…ç½® vscode
 
-*   ĞÂ½¨Ä¿Â¼ OpenGl ²¢Ê¹ÓÃ VSCode ´ò¿ª, `.vscode` Ä¿Â¼ÏÂ (Ã»ÓĞ¾ÍĞÂ½¨) ´´½¨ `settings.json`, ÅäÖÃÒÔÏÂÄÚÈİ
+*   æ–°å»ºç›®å½• OpenGl å¹¶ä½¿ç”¨ VSCode æ‰“å¼€, `.vscode` ç›®å½•ä¸‹ (æ²¡æœ‰å°±æ–°å»º) åˆ›å»º `settings.json`, é…ç½®ä»¥ä¸‹å†…å®¹
     
 ```json
 {
@@ -93,7 +93,7 @@ D:\Windows Kits\10\lib\10.0.19041.0\um\x86
 }
 ```
     
-*   .vscode ÏÂ´´½¨ `c_cpp_properties.json`
+*   .vscode ä¸‹åˆ›å»º `c_cpp_properties.json`
     
 ```json
 {
@@ -130,7 +130,7 @@ D:\Windows Kits\10\lib\10.0.19041.0\um\x86
 }
 ```
     
-*   .vscode ÏÂ´´½¨ `tasks.json`
+*   .vscode ä¸‹åˆ›å»º `tasks.json`
     
 ```json
 {
@@ -183,7 +183,7 @@ D:\Windows Kits\10\lib\10.0.19041.0\um\x86
 }
 ```
     
-.vscode ÏÂ´´½¨ `launch.json`
+.vscode ä¸‹åˆ›å»º `launch.json`
     
 ```json
 {
@@ -205,13 +205,19 @@ D:\Windows Kits\10\lib\10.0.19041.0\um\x86
 }
 ```
     
+### æµ‹è¯•è¿è¡Œ
 
-### ×¢ÒâÊÂÏî
+æ‰“å¼€æ–‡ä»¶ `src\1.0 Hello Window\hello_window.cpp`
+æŒ‰é”®F5è¿è¡Œï¼Œå¦‚æœé…ç½®æ­£ç¡®çš„è¯ï¼Œä¼šçœ‹åˆ°ä¸€ä¸ªçª—å£å¼¹å‡º, æ ‡é¢˜ä¸º 'Learn OpenGL'
 
-1.  ÒªÈ·±£»·¾³±äÁ¿ºÍÏîÄ¿ÖĞµÄ¿â±£³ÖÒ»ÖÂ ÒªÃ´¶¼ÊÇ x86 ÒªÃ´¶¼ÊÇ x64
+![alt text](res\img\image.png)
+
+### æ³¨æ„äº‹é¡¹
+
+1.  è¦ç¡®ä¿ç¯å¢ƒå˜é‡å’Œé¡¹ç›®ä¸­çš„åº“ä¿æŒä¸€è‡´ è¦ä¹ˆéƒ½æ˜¯ x86 è¦ä¹ˆéƒ½æ˜¯ x64
     
-2.  È·±£Ê¹ÓÃ vsdevcmd ½øĞĞ±àÒë
+2.  ç¡®ä¿ä½¿ç”¨ vsdevcmd è¿›è¡Œç¼–è¯‘
     
-3.  Óöµ½ "undefined reference to xxx", ÏÈ¼ì²é tasks.json Á´½ÓÈ±Ê§µÄ¿â, ÔÙ¼ì²é»·¾³±äÁ¿
+3.  é‡åˆ° "undefined reference to xxx", å…ˆæ£€æŸ¥ tasks.json é“¾æ¥ç¼ºå¤±çš„åº“, å†æ£€æŸ¥ç¯å¢ƒå˜é‡
     
-4.  ±àÒëÊ±ĞèÒªÒıÓÃ build ÎÄ¼ş¼Ğ, µ«ÊÇ build ÎÄ¼ş¼Ğ git ÒÑºöÂÔ, Òò´ËĞèÒª×Ô¼ºÌáÇ°ĞÂ½¨ºÃ
+4.  ç¼–è¯‘æ—¶éœ€è¦å¼•ç”¨ build æ–‡ä»¶å¤¹, ä½†æ˜¯ build æ–‡ä»¶å¤¹ git å·²å¿½ç•¥, å› æ­¤éœ€è¦è‡ªå·±æå‰æ–°å»ºå¥½

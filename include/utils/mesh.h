@@ -53,6 +53,7 @@ public:
         unsigned int specularNumber = 1;
         unsigned int normalNumber = 1;
         unsigned int heightNumber = 1;
+        unsigned int reflectNumber = 1;
 
         for (unsigned int i = 0; i < textures.size(); i++)
         {
@@ -69,7 +70,8 @@ public:
                 number = to_string(normalNumber);
             if(name == "texture_height")
                 number = to_string(heightNumber);
-
+            if(name == "texture_reflection")
+                number = to_string(reflectNumber);
             shader.setInt((name + number).c_str(), i);
             glBindTexture(GL_TEXTURE_2D, textures[i].id);
         }

@@ -125,11 +125,16 @@ int main()
 
     // 构建和编译 shader 程序
     //--------------------------------------------------------------------------------------
-    char *vsPath = "/src/2.6 Multiple Lights/multiple_lights.vs";
-    char *fsPath = "/src/2.6 Multiple Lights/multiple_lights.fs";
-    char *fsLightPath = "/src/2.3 Materials/light.fs";
+    char *vsPath = "/src/2.6 Multiple Lights/multiple_lights.vert";
+    char *fsPath = "/src/2.6 Multiple Lights/multiple_lights.frag";
+    char *fsLightPath = "/src/2.3 Materials/light.frag";
     ShaderLoader shaderObject(vsPath, fsPath, nullptr);     // 受光物体shader程序
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序
+
+    vsPath = "/src/4.9 Geometry Shader/visual_normal.vert";
+    fsPath = "/src/4.9 Geometry Shader/visual_normal.frag";
+    char *gsPath = "/src/4.9 Geometry Shader/visual_normal.geom";
+    ShaderLoader normalShader(vsPath, fsPath, gsPath);
 
     // 设置顶点数据 配置顶点属性
     //--------------------------------------------------------------------------------------
@@ -268,6 +273,21 @@ int main()
             model = rotate(model, radians(20.0f * i), glm::vec3(1.0f, 0.3f, 0.5f));
             shaderObject.setMat4("model", model);
             shaderObject.setMat3("normalMat", transpose(inverse(model)));
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+
+        // 绘制法线
+        normalShader.use();
+        normalShader.setMat4("projection", projection);
+        normalShader.setMat4("view", camera.GetViewMatrix());
+        normalShader.setFloat("MAGNITUDE", 0.3f);
+        for (int i = 0; i < 10; i++)
+        {
+            mat4 model = mat4(1.0f);
+            model = translate(model, cubePositions[i]);
+            model = rotate(model, radians(20.0f * i), glm::vec3(1.0f, 0.3f, 0.5f));
+            normalShader.setMat4("model", model);
+            normalShader.setMat3("normalMat", transpose(inverse(model)));
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 

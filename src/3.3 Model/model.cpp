@@ -37,7 +37,6 @@ float lastFrame = 0.0f;
 
 vec3 lightPos(1.2f, 1.0f, 2.0f);
 
-
 float vertices[] = {
     // positions          // normals           // texture coords
     -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
@@ -104,6 +103,7 @@ int main()
         glfwTerminate();
         return -1;
     }
+    // 设置窗口回调事件
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
@@ -120,10 +120,10 @@ int main()
 
     // 构建和编译 shader 程序
     //--------------------------------------------------------------------------------------
-    char *vsPath = "/src/3.3 Model/model.vs";
-    char *fsPath = "/src/3.3 Model/model.fs";
+    char *vsPath = "/src/3.3 Model/model.vert";
+    char *fsPath = "/src/3.3 Model/model.frag";
     ShaderLoader ourShader(vsPath, fsPath);
-        char *fsLightPath = "/src/2.3 Materials/light.fs";
+    char *fsLightPath = "/src/2.3 Materials/light.frag";
     ShaderLoader shaderLight(vsPath, fsLightPath, nullptr); // 发光物体shader程序
 
     // 加载模型
@@ -156,8 +156,6 @@ int main()
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     ourShader.use();
-    ourShader.setInt("material.diffuse", 0);
-    ourShader.setInt("material.specular", 1);
     ourShader.setFloat("light.constant", 1.0f);
     ourShader.setFloat("light.linear", 0.09f);
     ourShader.setFloat("light.quadratic", 0.032f);
@@ -180,9 +178,9 @@ int main()
         ourShader.use();
 
         // 材质设置(各个类型光照的颜色和反光度)
-        ourShader.setFloat("material.shininess", 0.25f * 128);
+        ourShader.setFloat("material.shininess", 0.25f * 32);
         // 光照设置(光照位置和光照强度)
-        ourShader.setVec3("light.ambient", vec3(.3f));
+        ourShader.setVec3("light.ambient", vec3(1.0f));
         ourShader.setVec3("light.diffuse", vec3(1.0f));
         ourShader.setVec3("light.specular", vec3(1.0f));
         ourShader.setVec4("light.vector", vec4(lightPos, 1.0f));
@@ -223,23 +221,21 @@ int main()
         glfwPollEvents();
     }
 
-    // glfw: terminate, clearing all previously allocated GLFW resources.
+    // 释放资源
     // ------------------------------------------------------------------
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
     glfwTerminate();
     return 0;
 }
 
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+// 窗口大小改变时 调整视口大小
 // ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
-    // make sure the viewport matches the new window dimensions; note that width and
-    // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
 }
 
-// glfw: whenever the mouse moves, this callback is called
-// -------------------------------------------------------
 void mouse_callback(GLFWwindow *window, double xpos, double ypos)
 {
     if (firstMouse)
@@ -258,8 +254,6 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos)
     camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
-// glfw: whenever the mouse scroll wheel scrolls, this callback is called
-// ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(yoffset);

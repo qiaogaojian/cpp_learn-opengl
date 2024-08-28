@@ -4,7 +4,7 @@
 
 另外,mingw/g++开发环境在g++分支,visual studio开发环境在vs2019分支.
 
-### 1.安装
+### 1.安装前置
 
 - VSCode 安装 C++ extension
 
@@ -15,7 +15,7 @@
 
 - 其他所用的库在[项目](https://github.com/qiaogaojian/learn-opengl.git)中的include文件夹里
 
-### 2.环境变量
+### 2.配置环境变量
 
 - Path中添加assimp库 cl编译器
 
@@ -199,6 +199,13 @@
       ]
   }
   ```
+
+### 测试运行
+
+打开文件 `src\1.0 Hello Window\hello_window.cpp`
+按键F5运行，如果配置正确的话，会看到一个窗口弹出, 标题为 'Learn OpenGL'
+
+![alt text](res\img\image.png)
 
 ### 遇到的几个坑
 

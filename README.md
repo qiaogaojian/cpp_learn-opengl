@@ -210,7 +210,7 @@ D:\Windows Kits\10\lib\10.0.19041.0\um\x86
 打开文件 `src\1.0 Hello Window\hello_window.cpp`
 按键F5运行，如果配置正确的话，会看到一个窗口弹出, 标题为 'Learn OpenGL'
 
-![alt text](res\img\image.png)
+![alt text](res/img/image.png)
 
 ### 注意事项
 
